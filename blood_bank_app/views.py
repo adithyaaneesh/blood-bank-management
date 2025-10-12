@@ -43,7 +43,7 @@ def index(request):
     return render(request,'index.html')
 def contact(request):
     return render(request,'contact.html')
-def dash(request):
+def dashboard(request):
     return render(request,'admin_dashboard.html')
 
 def stock_details(request):
