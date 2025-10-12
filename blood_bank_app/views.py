@@ -35,8 +35,6 @@ def user_login(request):
         user_data = LoginForm()
     return render(request, 'login.html', {'form':user_data})
 
-
-
 def user_logout(request):
     logout(request)
     return redirect('login')
@@ -45,6 +43,12 @@ def index(request):
     return render(request,'index.html')
 def contact(request):
     return render(request,'contact.html')
+def dash(request):
+    return render(request,'admin_dashboard.html')
+
+def stock_details(request):
+    stocks = BloodStock.objects.all().order_by('blood_group')
+    return render(request, 'stock_details.html', {'stocks': stocks})
 
 def blood_stock_list(request):
     stocks = BloodStock.objects.all()

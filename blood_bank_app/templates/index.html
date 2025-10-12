@@ -58,9 +58,12 @@
         <ul class="navbar-nav ms-auto">
           <li class="nav-item"><a class="nav-link active" href="{% url 'home' %}">Home</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Donors</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'blood_stock_list' %}">Blood Stock</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'stock_details' %}">Blood Stock</a></li>
           <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
           <li class="nav-item dropdown">
+            <a class="nav-link active" href="{% url 'logout' %}" role="button">
+              Logout
+            </a>
             <a class="nav-link dropdown-toggle" href="#" id="loginDropdown" role="button" data-bs-toggle="dropdown">
               Login
             </a>
@@ -80,7 +83,7 @@
     <div class="container">
       <h1>Give Blood, Save Lives</h1>
       <p>Your small act of kindness can bring a lifetime of happiness to someone in need.</p>
-      <a href="#" class="btn btn-light btn-lg mt-3">Become a Donor</a>
+      <a href="{% url 'login' %}" class="btn btn-light btn-lg mt-3">Become a Donor</a>
     </div>
   </section>
 
