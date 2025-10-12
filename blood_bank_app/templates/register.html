@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignUp</title>
+</head>
+<body>
+    <form method="post">
+        {% csrf_token %}
+        <p>Username: {{ form.username }}</p> 
+        <p>Email: {{ form.email }}</p> 
+        <p>Password: {{ form.password1 }}</p> 
+        <p>Confirm Password: {{ form.password2 }}</p> 
+        <button type="submit">SignUp</button>
+    </form>
+    <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+
+</body>
+</html>

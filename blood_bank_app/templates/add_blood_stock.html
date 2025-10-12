@@ -12,7 +12,7 @@
         {% csrf_token %}
         <div>
             <label>Blood Group</label>
-            <select name="blood_group" class="form-control" required>
+            <select name="blood_group" required>
                 <option value="">Select</option>
                 <option>A+</option><option>A-</option>
                 <option>B+</option><option>B-</option>
@@ -22,7 +22,7 @@
         </div>
         <div>
             <label>Units</label>
-            <input type="number" name="units" class="form-control" min="0" required>
+            <input type="number" name="units" min="0" required>
         </div>
         <button type="submit">Save</button>
         <a href="{% url 'blood_stock_list' %}">Cancel</a>
