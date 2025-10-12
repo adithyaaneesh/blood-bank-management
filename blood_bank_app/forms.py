@@ -1,10 +1,14 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import get_user_model
+from .models import Credential
 
 User = get_user_model()
 
 class UserRegistrationForm(UserCreationForm):
+    role = forms.ChoiceField(choices=Credential.ROLE_CHOICES)
+
+
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
@@ -24,11 +28,11 @@ class UserRegistrationForm(UserCreationForm):
         user.set_password(self.cleaned_data['password1'])
         if commit:
             user.save()
+            Credential.objects.create(
+                user=user,
+                role=self.cleaned_data['role']
+            )
         return user
-
-# class LoginForm(AuthenticationForm):
-#     username = forms.CharField(widget=forms.TextInput)
-#     password = forms.CharField(widget=forms.PasswordInput)
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))

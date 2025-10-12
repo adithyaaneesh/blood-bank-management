@@ -8,26 +8,38 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-def register(request):
+def user_register(request):
     if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
+        form_data = UserRegistrationForm(request.POST)
+        if form_data.is_valid():
+            form_data.save()
             return redirect('login')
     else:
-        form = UserRegistrationForm(request.POST)
-    return render(request,'register.html', {'form':form})
+        form_data = UserRegistrationForm()
+    return render(request,'register.html',{'form':form_data}) 
 
+        
 def user_login(request):
     if request.method == 'POST':
         user_data = LoginForm(request, data=request.POST) 
         if user_data.is_valid():
             user = user_data.get_user() 
             login(request, user)
+            # if user.profile.role == 'admin':
+            #     return redirect('dashboard')
+            # elif user.profile.role == 'user':
+            #     return redirect('userdashboard')
+            # else:
             return redirect('contact')
     else:
         user_data = LoginForm()
     return render(request, 'login.html', {'form':user_data})
+
+
+
+def user_logout(request):
+    logout(request)
+    return redirect('login')
 
 def index(request):
     return render(request,'index.html')
