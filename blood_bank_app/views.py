@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from .forms import UserRegistrationForm, LoginForm
 from .models import BloodStock
 from django.contrib.auth import get_user_model
+from django.db.models import Sum
+
 User = get_user_model()
 
 
@@ -25,11 +27,6 @@ def user_login(request):
         if user_data.is_valid():
             user = user_data.get_user() 
             login(request, user)
-            # if user.profile.role == 'admin':
-            #     return redirect('dashboard')
-            # elif user.profile.role == 'user':
-            #     return redirect('userdashboard')
-            # else:
             return redirect('contact')
     else:
         user_data = LoginForm()
@@ -41,10 +38,17 @@ def user_logout(request):
 
 def index(request):
     return render(request,'index.html')
+
 def contact(request):
     return render(request,'contact.html')
+
 def dashboard(request):
-    return render(request,'admin_dashboard.html')
+    total_units = BloodStock.objects.aggregate(total=Sum('units'))['total'] or 0
+    context = {
+        'blood_stock': total_units,
+    }
+    return render(request, 'admin_dashboard.html', context)
+
 
 def stock_details(request):
     stocks = BloodStock.objects.all().order_by('blood_group')
