@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hospital Home - Life Link</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f8f9fa;
+    }
+
+    .navbar {
+      background-color: #dc3545;
+    }
+
+    .hero {
+      background: white;
+      color: black;
+      height: 65vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      font-size: 1rem;
+      font-weight: lighter;
+    }
+
+    .features i {
+      font-size: 38px;
+      color: #dc3545;
+      margin-bottom: 10px;
+    }
+
+    .features h5 {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    thead {
+      background-color: #dc3545;
+      color: #fff;
+    }
+
+    th, td {
+      padding: 14px 16px;
+      text-align: center;
+      font-size: 0.95rem;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    tbody tr:hover {
+      background-color: #fdf2f2;
+      transition: 0.3s;
+    }
+
+    .btn-primary.btn-sm {
+      background-color: #dc3545;
+      border: none;
+    }
+
+    .btn-primary.btn-sm:hover {
+      background-color: #b82a38;
+    }
+
+    .contact-section {
+      background: white;
+      padding: 50px 0;
+      text-align: center;
+    }
+
+    .contact-section h1 {
+      color: #dc3545;
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    .contact-section p {
+      font-size: 0.95rem;
+      color: #666;
+      margin-bottom: 25px;
+    }
+
+    .contact-card {
+      max-width: 500px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 25px 30px;
+      border-radius: 12px;
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .contact-card input,
+    .contact-card textarea {
+      font-size: 0.9rem;
+      padding: 8px 10px;
+    }
+
+    .btn-submit {
+      background-color: #dc3545;
+      color: #fff;
+      font-weight: 500;
+      font-size: 0.9rem;
+      border-radius: 6px;
+      transition: 0.3s;
+    }
+
+    .btn-submit:hover {
+      background-color: #b82a38;
+    }
+
+    footer {
+      background-color: #212529;
+      color: white;
+      padding: 18px 0;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="#">🩸 Life Link</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="{% url 'hospitalhome' %}">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'requestform' %}">Pending Request</a></li>
+          <li class="nav-item">
+            <a class="nav-link" class="logout" href="{% url 'logout' %}" onclick="return confirmLogout()">
+              Logout <i class="fa-solid fa-right-from-bracket"></i> 
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <h1>Welcome, Hospital</h1>
+      <p>Stay informed about blood availability and make your contribution count in saving lives.</p>
+    </div>
+  </section>
+
+  <section class="py-5 text-center">
+    <div class="container">
+      <h2 class="fw-bold mb-4 text-danger">Blood In Stock</h2>
+      <div class="table-responsive">
+        <table class="table align-middle text-center">
+          <thead>
+            <tr>
+              <th>Blood Group</th>
+              <th>Units</th>
+              <th>Last Updated</th>
+              <!-- <th>Request</th> -->
+            </tr>
+          </thead>
+          <tbody>
+            {% for stock in stocks %}
+            <tr>
+              <td>{{ stock.blood_group }}</td>
+              <td>{{ stock.units }}</td>
+              <td>{{ stock.last_updated|date:"Y-m-d" }}</td>
+              <!-- <td>
+                <a href="{% url 'update_blood_stock' stock.id %}" class="btn btn-primary btn-sm">
+                  <i class="fa-solid fa-pen-to-square"></i> Request
+                </a>
+              </td> -->
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No stock records found.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact-section">
+    <div class="container">
+      <h1>Contact Us</h1>
+      <p class="lead mt-2">We’re here to help you. Reach out with any questions or feedback!</p>
+    </div>
+    <div class="contact-card">
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-2">
+          <input type="text" name="fname" class="form-control" placeholder="Full Name" required>
+        </div>
+        <div class="mb-2">
+          <input type="email" name="email" class="form-control" placeholder="Email" required>
+        </div>
+        <div class="mb-2">
+          <input type="tel" name="phonenum" class="form-control" placeholder="Phone Number" required>
+        </div>
+        <div class="mb-2">
+          <textarea name="message" class="form-control" rows="3" placeholder="Message..." required></textarea>
+        </div>
+        <div class="text-center mt-3">
+          <button type="submit" class="btn btn-submit px-4">Send Message</button>
+        </div>
+      </form>
+    </div>
+  </section>
+  <footer>
+    <p>© 2025 Life Link | Designed by Adithya</p>
+  </footer>
+<script>
+    function confirmLogout() {
+        return confirm("Are you sure you want to log out?");
+    }
+</script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

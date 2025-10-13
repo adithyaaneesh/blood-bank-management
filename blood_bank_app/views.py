@@ -94,8 +94,11 @@ def patient_home(request):
 
 def donate_form(request):
     return render(request, 'patient/donate_form.html')
+
 def request_form(request):
     return render(request, 'patient/request_form.html')
 
-
+def hospital_home(request):
+    stocks = BloodStock.objects.all().order_by('blood_group')
+    return render(request, 'hospital/hospital_home.html',{'stocks':stocks})
 

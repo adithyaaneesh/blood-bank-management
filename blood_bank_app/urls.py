@@ -16,4 +16,5 @@ urlpatterns = [
     path('patienthome/', views.patient_home, name='patienthome'),
     path('donateform/', views.donate_form, name='donateform'),
     path('requestform/', views.request_form, name='requestform'),
+    path('hospitalhome/', views.hospital_home, name='hospitalhome'),
 ]
