@@ -47,16 +47,16 @@ def dashboard(request):
     context = {
         'blood_stock': total_units,
     }
-    return render(request, 'admin_dashboard.html', context)
+    return render(request, 'admin/admin_dashboard.html', context)
 
 
 def stock_details(request):
     stocks = BloodStock.objects.all().order_by('blood_group')
-    return render(request, 'stock_details.html', {'stocks': stocks})
+    return render(request, 'patient/stock_details.html', {'stocks': stocks})
 
 def blood_stock_list(request):
     stocks = BloodStock.objects.all()
-    return render(request,'blood_stock_list.html',{'stocks':stocks})
+    return render(request,'admin/blood_stock_list.html',{'stocks':stocks})
 
 def add_blood_stock(request):
     if request.method == 'POST':
@@ -64,20 +64,20 @@ def add_blood_stock(request):
         units = request.POST.get('units')
         if blood_group and units:
             BloodStock.objects.create(blood_group=blood_group, units=units)
-        return redirect('blood_stock_list')
-    return render(request,'add_blood_stock.html')
+        return redirect('admin/blood_stock_list')
+    return render(request,'admin/add_blood_stock.html')
 
 def update_blood_stock(request, stock_id):
     stock = get_object_or_404(BloodStock, id=stock_id)
     if request.method == 'POST':
         stock.units = request.POST.get('units')
         stock.save()
-        return redirect('blood_stock_list')
-    return render(request,'update_blood_stock.html',{'stock':stock})
+        return redirect('admin/blood_stock_list')
+    return render(request,'admin/update_blood_stock.html',{'stock':stock})
 
 def delete_blood_stock(request, stock_id):
     stock = get_object_or_404(BloodStock, id=stock_id)
     stock.delete()
-    return redirect('blood_stock_list')
+    return redirect('admin/blood_stock_list')
 
 
