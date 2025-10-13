@@ -60,7 +60,7 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="loginDropdown">
               <li><a class="dropdown-item" href="#">Admin Login</a></li>
-              <li><a class="dropdown-item" href="#">Donor Login</a></li>
+              <li><a class="dropdown-item" href="#">Donor/Patient Login</a></li>
               <li><a class="dropdown-item" href="#">Hospital Login</a></li>
             </ul>
           </li>
@@ -79,6 +79,7 @@
                 <th>Blood Group</th>
                 <th>Units</th>
                 <th>Last Updated</th>
+                <th>Request</th>
             </tr>
         </thead>
         <tbody>
@@ -87,6 +88,11 @@
                 <td>{{ stock.blood_group }}</td>
                 <td>{{ stock.units }}</td>
                 <td>{{ stock.last_updated|date:"Y-m-d" }}</td>
+                <td>
+                  <a href="{% url 'update_blood_stock' stock.id %}" class="btn btn-primary btn-sm me-2">
+                    <i class="fa-solid fa-pen-to-square"></i> Request
+                  </a>
+                </td>
             </tr>
             {% empty %}
             <tr><td colspan="4">No stock records found.</td></tr>

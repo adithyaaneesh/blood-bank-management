@@ -36,6 +36,7 @@ def user_logout(request):
     logout(request)
     return redirect('login')
 
+
 def index(request):
     return render(request,'index.html')
 
@@ -63,21 +64,38 @@ def add_blood_stock(request):
         blood_group = request.POST.get('blood_group')
         units = request.POST.get('units')
         if blood_group and units:
-            BloodStock.objects.create(blood_group=blood_group, units=units)
-        return redirect('admin/blood_stock_list')
-    return render(request,'admin/add_blood_stock.html')
+            units = int(units)
+            existing_stock = BloodStock.objects.filter(blood_group=blood_group).first()
+            if existing_stock:
+                existing_stock.units += units
+                existing_stock.save()
+            else:
+                BloodStock.objects.create(blood_group=blood_group, units=units)
+        return redirect('blood_stock_list')
+    return render(request, 'admin/add_blood_stock.html')
+
 
 def update_blood_stock(request, stock_id):
     stock = get_object_or_404(BloodStock, id=stock_id)
     if request.method == 'POST':
         stock.units = request.POST.get('units')
         stock.save()
-        return redirect('admin/blood_stock_list')
+        return redirect('blood_stock_list')
     return render(request,'admin/update_blood_stock.html',{'stock':stock})
 
 def delete_blood_stock(request, stock_id):
     stock = get_object_or_404(BloodStock, id=stock_id)
     stock.delete()
-    return redirect('admin/blood_stock_list')
+    return redirect('blood_stock_list')
+
+def patient_home(request):
+    stocks = BloodStock.objects.all().order_by('blood_group')
+    return render(request, 'patient/patient_home.html',{'stocks':stocks})
+
+def donate_form(request):
+    return render(request, 'patient/donate_form.html')
+def request_form(request):
+    return render(request, 'patient/request_form.html')
+
 
 
