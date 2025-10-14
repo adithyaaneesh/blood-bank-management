@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hospital Home - Life Link</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -15,143 +16,90 @@
     .navbar {
       background-color: #dc3545;
     }
+    .navbar-brand {
+      font-size: 1.6rem;
+      color: #fff;
+    }
+    .navbar-nav .nav-link {
+
+      font-weight: 500;
+      transition: 0.3s;
+    }
+    .navbar-nav .nav-link:hover {
+      color: #ffe6e6 !important;
+    }
 
     .hero {
-      background: white;
-      color: black;
-      height: 65vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
+      background: linear-gradient(90deg, rgba(159, 205, 219, 0.9), rgba(221, 165, 170, 0.95)), 
+                  url('https://img.freepik.com/free-photo/close-up-doctor-with-red-heart_23-2148969805.jpg?t=st=1727842044~exp=1727845644~hmac=011e37a2b6e3bb7f3b4a207ef53b85f5868b8b2e47d53b2e8995f62c4a8e8b9e&w=1380') 
+                  center/cover no-repeat;
+      color: #fff;
+      padding: 100px 0;
       text-align: center;
-      padding: 40px;
+      position: relative;
     }
 
     .hero h1 {
       font-size: 2.8rem;
-      font-weight: bold;
-      margin-bottom: 10px;
+      font-weight: 700;
+      margin-bottom: 15px;
     }
 
     .hero p {
-      font-size: 1rem;
-      font-weight: lighter;
-    }
-
-    .features i {
-      font-size: 38px;
-      color: #dc3545;
-      margin-bottom: 10px;
-    }
-
-    .features h5 {
-      font-weight: 600;
       font-size: 1.1rem;
+      max-width: 700px;
+      margin: 0 auto 25px;
+      opacity: 0.95;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #fff;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08);
-    }
-
-    thead {
-      background-color: #dc3545;
-      color: #fff;
-    }
-
-    th, td {
-      padding: 14px 16px;
-      text-align: center;
-      font-size: 0.95rem;
-      border-bottom: 1px solid #f0f0f0;
-    }
-
-    tbody tr:hover {
-      background-color: #fdf2f2;
-      transition: 0.3s;
-    }
-
-    .btn-primary.btn-sm {
-      background-color: #dc3545;
-      border: none;
-    }
-
-    .btn-primary.btn-sm:hover {
-      background-color: #b82a38;
-    }
-    .summary-card {
-          flex: 1 1 200px;
-          background: #fff;
-          border-radius: 10px;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-          padding: 20px;
-          text-align: center;
-          transition: transform 0.2s;
-      }
-      .summary-card:hover {
-          transform: translateY(-5px);
-      }
-      .summary-card i {
-          font-size: 32px;
-          color: rgb(207, 68, 68);
-          margin-bottom: 10px;
-      }
-      .summary-card .count-number {
-          font-size: 24px;
-          font-weight: 700;
-          color: #333;
-      }
-    .contact-section {
-      background: white;
-      padding: 50px 0;
-      text-align: center;
-    }
-
-    .contact-section h1 {
+    .hero .btn-main {
+      background-color: #fff;
       color: #dc3545;
-      font-size: 1.8rem;
-      margin-bottom: 10px;
+      font-weight: 600;
+      padding: 10px 24px;
+      border-radius: 30px;
+      transition: 0.3s ease;
     }
 
-    .contact-section p {
-      font-size: 0.95rem;
-      color: #666;
-      margin-bottom: 25px;
-    }
-
-    .contact-card {
-      max-width: 500px;
-      margin: 0 auto;
-      background: #ffffff;
-      padding: 25px 30px;
-      border-radius: 12px;
-      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08);
-    }
-
-    .contact-card input,
-    .contact-card textarea {
-      font-size: 0.9rem;
-      padding: 8px 10px;
-    }
-
-    .btn-submit {
-      background-color: #dc3545;
+    .hero .btn-main:hover {
+      background-color: #b71c1c;
       color: #fff;
-      font-weight: 500;
-      font-size: 0.9rem;
-      border-radius: 6px;
-      transition: 0.3s;
+      transform: scale(1.05);
     }
 
-    .btn-submit:hover {
-      background-color: #b82a38;
+    .hero .stats {
+      margin-top: 50px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 30px;
     }
 
+    .stat-box {
+      background: rgba(75, 74, 74, 0.15);
+      border-radius: 10px;
+      padding: 20px 30px;
+      min-width: 150px;
+      backdrop-filter: blur(5px);
+      transition: 0.3s ease;
+    }
+
+    .stat-box:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-5px);
+    }
+
+    .stat-box h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .stat-box p {
+      font-size: 0.95rem;
+      color: #212529;
+      margin: 0;
+    }
     footer {
       background-color: #212529;
       color: white;
@@ -159,123 +107,77 @@
       text-align: center;
       font-size: 0.9rem;
     }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+      .hero p {
+        font-size: 1rem;
+        padding: 0 10px;
+      }
+    }
   </style>
 </head>
 <body>
-
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
-      <a class="navbar-brand fw-bold" href="#">🩸 Life Link</a>
+      <a class="navbar-brand fw-bold" href="#"><i class="fa-solid fa-droplet me-2"></i>Life Link</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item"><a class="nav-link active" href="{% url 'hospitalhome' %}">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'hospitalhome' %}">Blood Stocks</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'requestform' %}">Pending Request</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'hospitalstock' %}">Blood Stocks</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'requestform' %}">Request Blood</a></li>
           <li class="nav-item">
-            <a class="nav-link" class="logout" href="{% url 'logout' %}" onclick="return confirmLogout()">
-              Logout <i class="fa-solid fa-right-from-bracket"></i> 
+            <a class="nav-link logout" href="{% url 'logout' %}" onclick="return confirmLogout()">
+              Logout <i class="fa-solid fa-right-from-bracket ms-1"></i>
             </a>
           </li>
         </ul>
       </div>
     </div>
   </nav>
-
   <section class="hero">
     <div class="container">
-      <h1>Welcome, Hospital</h1>
-      <p>Stay informed about blood availability and make your contribution count in saving lives.</p>
-    </div>
-  </section>
-  <section>
-    <div class="col-md-10 p-4">
-      <h2 class="mb-4">Hospital Dashboard</h2>
+      <h1>Welcome to Life Link Hospital Dashboard</h1>
+      <p>Manage blood requests, check availability, and ensure life-saving blood reaches those in need — efficiently and reliably.</p>
+      <a href="{% url 'hospitalstock' %}" class="btn btn-main">
+        <i class="fa-solid fa-droplet me-2"></i> View Blood Stock
+      </a>
 
-      <div class="summary-cards d-flex flex-wrap gap-4">
-          <div class="summary-card">
-              <i class="fa-solid fa-users"></i>
-              <p class="count-number">25</p>
-              <p>Available Donors</p>
-          </div>
-          <div class="summary-card">
-              <i class="fa-solid fa-droplet"></i>
-              <p class="count-number">54</p>
-              <p>Available Blood Units</p>
-          </div>
+      <div class="stats">
+        <div class="stat-box">
+          <h3>{{ total_requests }}</h3>
+          <p>Total Requests</p>
+        </div>
+        <div class="stat-box">
+          <h3>{{ approved_requests }}</h3>
+          <p>Approved Requests</p>
+        </div>
+        <div class="stat-box">
+          <h3>{{ available_donors }}</h3>
+          <p>Available Donors</p>
+        </div>
+        <div class="stat-box">
+          <h3>{{ total_blood_units }}</h3>
+          <p>Blood Units</p>
+        </div>
       </div>
-    </div>
-  </section>
-  <section class="py-5 text-center">
-    <div class="container">
-      <h2 class="fw-bold mb-4 text-danger">Blood In Stock</h2>
-      <div class="table-responsive">
-        <table class="table align-middle text-center">
-          <thead>
-            <tr>
-              <th>Blood Group</th>
-              <th>Units</th>
-              <th>Last Updated</th>
-              <!-- <th>Request</th> -->
-            </tr>
-          </thead>
-          <tbody>
-            {% for stock in stocks %}
-            <tr>
-              <td>{{ stock.blood_group }}</td>
-              <td>{{ stock.units }}</td>
-              <td>{{ stock.last_updated|date:"Y-m-d" }}</td>
-              <!-- <td>
-                <a href="{% url 'update_blood_stock' stock.id %}" class="btn btn-primary btn-sm">
-                  <i class="fa-solid fa-pen-to-square"></i> Request
-                </a>
-              </td> -->
-            </tr>
-            {% empty %}
-            <tr><td colspan="4">No stock records found.</td></tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <section class="contact-section">
-    <div class="container">
-      <h1>Contact Us</h1>
-      <p class="lead mt-2">We’re here to help you. Reach out with any questions or feedback!</p>
-    </div>
-    <div class="contact-card">
-      <form method="post">
-        {% csrf_token %}
-        <div class="mb-2">
-          <input type="text" name="fname" class="form-control" placeholder="Full Name" required>
-        </div>
-        <div class="mb-2">
-          <input type="email" name="email" class="form-control" placeholder="Email" required>
-        </div>
-        <div class="mb-2">
-          <input type="tel" name="phonenum" class="form-control" placeholder="Phone Number" required>
-        </div>
-        <div class="mb-2">
-          <textarea name="message" class="form-control" rows="3" placeholder="Message..." required></textarea>
-        </div>
-        <div class="text-center mt-3">
-          <button type="submit" class="btn btn-submit px-4">Send Message</button>
-        </div>
-      </form>
     </div>
   </section>
   <footer>
     <p>© 2025 Life Link | Designed by Adithya</p>
   </footer>
-<script>
+
+  <script>
     function confirmLogout() {
-        return confirm("Are you sure you want to log out?");
+      return confirm("Are you sure you want to log out?");
     }
-</script>
+  </script>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -45,8 +45,24 @@ def contact(request):
 
 def dashboard(request):
     total_units = BloodStock.objects.aggregate(total=Sum('units'))['total'] or 0
+    blood_data = {group: 0 for group, _ in BloodStock.BLOOD_GROUPS}
+    for stock in BloodStock.objects.all():
+        blood_data[stock.blood_group] = stock.units
+
     context = {
-        'blood_stock': total_units,
+        'available_donors': 24,
+        'total_blood_units': total_units,
+        'total_requests': 42, 
+        'approved_requests': 38, 
+        'a_positive': blood_data['A+'],
+        'a_negative': blood_data['A-'],
+        'b_positive': blood_data['B+'],
+        'b_negative': blood_data['B-'],
+        'ab_positive': blood_data['AB+'],
+        'ab_negative': blood_data['AB-'],
+        'o_positive': blood_data['O+'],
+        'o_negative': blood_data['O-'],
+        'blood_stock': total_units, 
     }
     return render(request, 'admin/admin_dashboard.html', context)
 
@@ -101,4 +117,21 @@ def request_form(request):
 def hospital_home(request):
     stocks = BloodStock.objects.all().order_by('blood_group')
     return render(request, 'hospital/hospital_home.html',{'stocks':stocks})
+
+def hospital_stock(request):
+    stocks = BloodStock.objects.all()
+    blood_data = {group: 0 for group, _ in BloodStock.BLOOD_GROUPS}
+    for stock in stocks:
+        blood_data[stock.blood_group] = stock.units
+    context = {
+        'a_positive': blood_data['A+'],
+        'a_negative': blood_data['A-'],
+        'b_positive': blood_data['B+'],
+        'b_negative': blood_data['B-'],
+        'ab_positive': blood_data['AB+'],
+        'ab_negative': blood_data['AB-'],
+        'o_positive': blood_data['O+'],
+        'o_negative': blood_data['O-'],
+    }
+    return render(request, 'hospital/hospital_stocks.html', context)
 

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,7 +57,12 @@
             border-radius: 6px;
         }
 
-        /* Dashboard Cards */
+        .summary-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
         .summary-card {
             flex: 1 1 200px;
             background: #fff;
@@ -67,6 +71,8 @@
             padding: 20px;
             text-align: center;
             transition: transform 0.2s;
+            width: 200px;
+            min-height: 130px;
         }
         .summary-card:hover {
             transform: translateY(-5px);
@@ -81,7 +87,11 @@
             font-weight: 700;
             color: #333;
         }
-
+        .small-card i {
+            font-size: 32px;
+            color: rgb(210, 82, 82);
+            margin-bottom: 10px;
+        }
         h2 {
             color: #1F78C9;
             font-weight: 600;
@@ -90,7 +100,7 @@
     </style>
 </head>
 <body>
-     <nav class="navbar d-flex justify-content-between align-items-center">
+    <nav class="navbar d-flex justify-content-between align-items-center">
         <h1 class="text-white mb-0">Admin Dashboard</h1>
         <div class="dropdown">
             <button class="btn btn-light dropdown-toggle" type="button" id="adminDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -99,12 +109,15 @@
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
                 <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user"></i> Profile</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item text-danger" href="{% url 'logout' %}" onclick="return confirmLogout()">
-                    <i class="fa-solid fa-right-from-bracket"></i> Logout
-                </a></li>
+                <li>
+                    <a class="dropdown-item text-danger" href="{% url 'logout' %}" onclick="return confirmLogout()">
+                        <i class="fa-solid fa-right-from-bracket"></i> Logout
+                    </a>
+                </li>
             </ul>
         </div>
     </nav>
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-2 p-3 sidebar">
@@ -126,35 +139,79 @@
                     </a>
                 </nav>
             </div>
-            
             <div class="col-md-10 p-4">
                 <h2 class="mb-4">Dashboard Summary</h2>
 
-                <div class="summary-cards d-flex flex-wrap gap-4">
-                    <div class="summary-card">
-                        <i class="fa-solid fa-users"></i>
-                        <p class="count-number">25</p>
-                        <p>Total Users</p>
-                    </div>
+                <div class="summary-cards mb-5">
                     <div class="summary-card">
                         <i class="fa-solid fa-hand-holding-droplet"></i>
-                        <p class="count-number">80</p>
-                        <p>Donors</p>
-                    </div>
-                    <div class="summary-card">
-                        <i class="fa-solid fa-hospital"></i>
-                        <p class="count-number">12</p>
-                        <p>Hospitals</p>
+                        <p class="count-number">{{ available_donors }}</p>
+                        <p>Available Donors</p>
                     </div>
                     <div class="summary-card">
                         <i class="fa-solid fa-droplet"></i>
-                        <p class="count-number">{{ blood_stock }}</p>
-                        <p>Blood Units</p>
+                        <p class="count-number">{{ total_blood_units }}</p>
+                        <p>Total Blood Units</p>
+                    </div>
+                    <div class="summary-card">
+                        <i class="fa-solid fa-envelope-open-text"></i>
+                        <p class="count-number">{{ total_requests }}</p>
+                        <p>Total Requests</p>
+                    </div>
+                    <div class="summary-card">
+                        <i class="fa-solid fa-check-circle"></i>
+                        <p class="count-number">{{ approved_requests }}</p>
+                        <p>Approved Requests</p>
+                    </div>
+                </div>
+
+                <h2 class="mb-4">Blood Group Stock</h2>
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <i class="fa-solid fa-droplet"></i>
+                        <p class="count-number">{{ a_positive }}</p>
+                        <p>A+</p>
+                    </div>
+                    <div class="summary-card">
+                        <i class="fa-solid fa-droplet"></i>
+                        <p class="count-number">{{ a_negative }}</p>
+                        <p>A−</p>
+                    </div>
+                    <div class="summary-card">
+                        <i class="fa-solid fa-droplet"></i>
+                        <p class="count-number">{{ b_positive }}</p>
+                        <p>B+</p>
+                    </div>
+                    <div class="summary-card">
+                        <i class="fa-solid fa-droplet"></i>
+                        <p class="count-number">{{ b_negative }}</p>
+                        <p>B−</p>
+                    </div>
+                    <div class="summary-card">
+                        <i class="fa-solid fa-droplet"></i>
+                        <p class="count-number">{{ ab_positive }}</p>
+                        <p>AB+</p>
+                    </div>
+                    <div class="summary-card">
+                        <i class="fa-solid fa-droplet"></i>
+                        <p class="count-number">{{ ab_negative }}</p>
+                        <p>AB−</p>
+                    </div>
+                    <div class="summary-card">
+                        <i class="fa-solid fa-droplet"></i>
+                        <p class="count-number">{{ o_positive }}</p>
+                        <p>O+</p>
+                    </div>
+                    <div class="summary-card">
+                        <i class="fa-solid fa-droplet"></i>
+                        <p class="count-number">{{ o_negative }}</p>
+                        <p>O−</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
     <script>
         function confirmLogout() {
             return confirm("Are you sure you want to log out?");
