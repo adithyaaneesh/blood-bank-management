@@ -102,6 +102,7 @@
   </nav>
   <section class="form-section">
     <div class="container">
+      <a href="{% url 'login' %}" class="btn btn-light btn-sm">Donate History</a>
       <h4 class="lead mt-2 text-secondary">Are you ready to make a difference?</h4>
       <h1>Blood Donor Form</h1>
       <p>Your donation can save lives. Please provide accurate details to help us connect you with those in need.</p>
@@ -123,9 +124,6 @@
           <input type="number" name="age" class="form-control" placeholder="Age" required>
         </div>
         <div class="mb-3">
-          <textarea name="address" class="form-control" rows="3" placeholder="Address..." required></textarea>
-        </div>
-        <div class="mb-3">
           <select name="blood_group" class="form-select" required>
             <option value="">Select Blood Group</option>
             <option>A+</option><option>A-</option>
@@ -133,6 +131,9 @@
             <option>AB+</option><option>AB-</option>
             <option>O+</option><option>O-</option>
           </select>
+        </div>
+        <div class="mb-3">
+          <input type="number" name="units" class="form-control" placeholder="Units (ml)" required>
         </div>
         <div class="mb-3">
           <label class="form-label">Gender</label><br>

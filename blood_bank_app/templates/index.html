@@ -38,6 +38,51 @@
       color: #dc3545;
       margin-bottom: 10px;
     }
+    .contact-section {
+      background: white;
+      padding: 50px 0;
+      text-align: center;
+    }
+
+    .contact-section h1 {
+      color: #dc3545;
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    .contact-section p {
+      font-size: 0.95rem;
+      color: #666;
+      margin-bottom: 25px;
+    }
+
+    .contact-card {
+      max-width: 500px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 25px 30px;
+      border-radius: 12px;
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .contact-card input,
+    .contact-card textarea {
+      font-size: 0.9rem;
+      padding: 8px 10px;
+    }
+
+    .btn-submit {
+      background-color: #dc3545;
+      color: #fff;
+      font-weight: 500;
+      font-size: 0.9rem;
+      border-radius: 6px;
+      transition: 0.3s;
+    }
+
+    .btn-submit:hover {
+      background-color: #b82a38;
+    }
     footer {
       background-color: #212529;
       color: white;
@@ -57,9 +102,8 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item"><a class="nav-link active" href="{% url 'home' %}">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Donors</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'stock_details' %}">Blood Stock</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
+          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="loginDropdown" role="button" data-bs-toggle="dropdown">
               Login
@@ -75,7 +119,7 @@
     </div>
   </nav>
 
-  <section class="hero">
+  <section id="main" class="hero">
     <div class="container">
       <h1>Give Blood, Save Lives</h1>
       <p>Your small act of kindness can bring a lifetime of happiness to someone in need.</p>
@@ -83,7 +127,7 @@
     </div>
   </section>
 
-  <section class="py-5 text-center">
+  <section id="about" class="py-5 text-center">
     <div class="container">
       <h2 class="fw-bold mb-4 text-danger">About Our Blood Bank</h2>
       <p class="text-muted mb-5">
@@ -108,6 +152,32 @@
           <p>Manage donors, recipients, and blood inventory efficiently.</p>
         </div>
       </div>
+    </div>
+  </section>
+  <section id="contact" class="contact-section">
+    <div class="container">
+      <h1>Contact Us</h1>
+      <p class="lead mt-2">We’re here to help you. Reach out with any questions or feedback!</p>
+    </div>
+    <div class="contact-card">
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-2">
+          <input type="text" name="fname" class="form-control" placeholder="Full Name" required>
+        </div>
+        <div class="mb-2">
+          <input type="email" name="email" class="form-control" placeholder="Email" required>
+        </div>
+        <div class="mb-2">
+          <input type="tel" name="phonenum" class="form-control" placeholder="Phone Number" required>
+        </div>
+        <div class="mb-2">
+          <textarea name="message" class="form-control" rows="3" placeholder="Message..." required></textarea>
+        </div>
+        <div class="text-center mt-3">
+          <button type="submit" class="btn btn-submit px-4">Send Message</button>
+        </div>
+      </form>
     </div>
   </section>
   <footer>

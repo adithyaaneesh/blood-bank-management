@@ -49,7 +49,28 @@
       font-weight: 600;
       font-size: 1.1rem;
     }
-
+    .summary-card {
+          flex: 1 1 200px;
+          background: #fff;
+          border-radius: 10px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+          padding: 20px;
+          text-align: center;
+          transition: transform 0.2s;
+      }
+      .summary-card:hover {
+          transform: translateY(-5px);
+      }
+      .summary-card i {
+          font-size: 32px;
+          color: red;
+          margin-bottom: 10px;
+      }
+      .summary-card .count-number {
+          font-size: 24px;
+          font-weight: 700;
+          color: #333;
+      }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -169,7 +190,34 @@
       <p>Stay informed about blood availability and make your contribution count in saving lives.</p>
     </div>
   </section>
+  <section>
+    <div class="col-md-10 p-4">
+      <h2 class="mb-4">Patient Dashboard</h2>
 
+      <div class="summary-cards d-flex flex-wrap gap-4">
+          <div class="summary-card">
+              <i class="fa-solid fa-users"></i>
+              <p class="count-number">25</p>
+              <p>Request Made</p>
+          </div>
+          <div class="summary-card">
+              <i class="fa-solid fa-hand-holding-droplet"></i>
+              <p class="count-number">80</p>
+              <p>Pending Request</p>
+          </div>
+          <div class="summary-card">
+              <i class="fa-solid fa-hospital"></i>
+              <p class="count-number">12</p>
+              <p>Approved Request</p>
+          </div>
+          <div class="summary-card">
+              <i class="fa-solid fa-droplet"></i>
+              <p class="count-number">54</p>
+              <p>Rejected Request</p>
+          </div>
+      </div>
+    </div>
+  </section>
   <section class="py-5 text-center">
     <div class="container">
       <h2 class="fw-bold mb-4 text-danger">Blood In Stock</h2>
