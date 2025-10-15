@@ -54,4 +54,24 @@ class DonorForm(models.Model):
 
     def __str__(self):
         return self.firstname
+    
+class RequestForm(models.Model):
+    firstname = models.CharField(max_length=20)
+    email = models.EmailField(max_length=50) 
+    phone = models.CharField(max_length=15)
+    age = models.IntegerField()
+    reason = models.CharField(max_length=50)
+    blood_group = models.CharField(max_length=5, choices=[
+        ('A+', 'A+'), ('A-', 'A-'),
+        ('B+', 'B+'), ('B-', 'B-'),
+        ('AB+', 'AB+'), ('AB-', 'AB-'),
+        ('O+', 'O+'), ('O-', 'O-'),
+    ])
+    units = models.IntegerField()
+    gender = models.CharField(max_length=10, choices=[
+        ('Male', 'Male'),
+        ('Female', 'Female'),
+    ])
 
+    def __str__(self):
+        return self.firstname
