@@ -2,7 +2,7 @@ from pyexpat.errors import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .forms import UserRegistrationForm, LoginForm
+from .forms import UserRegistrationForm,HospitalRegistrationForm, LoginForm
 from .models import BloodStock, DonorForm, RequestForm, HospitalRequestForm
 from django.contrib.auth import get_user_model
 from django.db.models import Sum
@@ -20,7 +20,18 @@ def user_register(request):
         form_data = UserRegistrationForm()
     return render(request,'register.html',{'form':form_data}) 
 
-        
+def hospital_register(request):
+    if request.method == 'POST':
+        form = HospitalRegistrationForm(request.POST)
+        if form.is_valid:
+            form.save()
+            return redirect('login')
+    else:
+        form = HospitalRegistrationForm(request.POST)
+    return render(request,'hospital_register.html',{'form':form})
+
+
+
 def user_login(request):
     if request.method == 'POST':
         user_data = LoginForm(request, data=request.POST) 
@@ -32,16 +43,13 @@ def user_login(request):
         user_data = LoginForm()
     return render(request, 'login.html', {'form':user_data})
 
+
 def user_logout(request):
     logout(request)
     return redirect('login')
 
-
 def index(request):
     return render(request,'index.html')
-
-def contact(request):
-    return render(request,'contact.html')
 
 def dashboard(request):
     total_units = BloodStock.objects.aggregate(total=Sum('units'))['total'] or 0

@@ -7,8 +7,6 @@ User = get_user_model()
 
 class UserRegistrationForm(UserCreationForm):
     role = forms.ChoiceField(choices=Credential.ROLE_CHOICES)
-
-
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
@@ -34,19 +32,61 @@ class UserRegistrationForm(UserCreationForm):
             )
         return user
 
+class HospitalRegistrationForm(forms.ModelForm):
+    hospitalname = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    phonenumber = forms.CharField(max_length=15,widget=forms.TextInput(attrs={'class': 'form-control'}))
+    address = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 2}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = User
+        fields = ['username', 'email']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name in ['username', 'password1', 'password2']:
+            if field_name in self.fields:
+                self.fields[field_name].help_text = None
+
+    def clean(self):
+        """Validate matching passwords — silently ignore if not matching."""
+        data = super().clean()
+        password = data.get('password')
+        confirm = data.get('confirm_password')
+        if password and confirm and password != confirm:
+            self.add_error('confirm_password', None)
+            data['confirm_password'] = ''
+        return data
+
+    def clean_hospitalname(self):
+        """Ensure hospital name is provided (silent check)."""
+        name = self.cleaned_data.get('hospitalname')
+        if not name:
+            self.add_error('hospitalname', None)
+        return name
+
+    def save(self, commit=True):
+        """Save hospital user with encrypted password."""
+        hospital = super().save(commit=False)
+        hospital.set_password(self.cleaned_data['password'])
+        if commit:
+            hospital.save()
+        return hospital
+
 class LoginForm(AuthenticationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
 
-# from django import forms 
-# from django.contrib.auth.models import User
-# from .models import Donor, Patient, BloodStock, BLOOD_GROUP_CHOICES, GENDER_CHOICES,Hospital,DonorHealthCheck
-
-# ROLE_CHOICES = [
-#     ('donor', 'Donor'),
-#     ('patient', 'Patient'),
-# ]
+ROLE_CHOICES = [
+    ('donor', 'Donor'),
+    ('patient', 'Patient'),
+]
 
 # class RegistrationForm(forms.ModelForm):
 #     username = forms.CharField(max_length=100)
@@ -78,67 +118,4 @@ class LoginForm(AuthenticationForm):
 
 #         return cleaned_data
 
-# class HospitalRegistrationForm(forms.ModelForm):
-#     username = forms.CharField(max_length=100)
-#     email = forms.EmailField()
-#     password = forms.CharField(widget=forms.PasswordInput)
-#     name = forms.CharField(max_length=255, label="Hospital Name")
-#     phone = forms.CharField(max_length=15)
-#     address = forms.CharField(widget=forms.Textarea)
 
-#     class Meta:
-#         model = User
-#         fields = ['username', 'email', 'password']
-
-#     def clean_name(self):
-#         name = self.cleaned_data.get('name')
-#         if not name:
-#             raise forms.ValidationError("Hospital name is required.")
-#         return name
-
-# class BloodStockForm(forms.ModelForm):
-#     class Meta:
-#         model = BloodStock
-#         fields = ['blood_group', 'units']
-
-
-# class LastDonationForm(forms.ModelForm):
-#     class Meta:
-#         model = Donor
-#         fields = ['last_donation_date']
-#         widgets = {
-#             'last_donation_date': forms.DateInput(attrs={'type': 'date'})
-#         }
-        
-        
-# class HospitalProfileForm(forms.ModelForm):
-#     class Meta:
-#         model = Hospital
-#         fields = ['name', 'email', 'phone']
-#         widgets = {
-#             'name': forms.TextInput(attrs={'class': 'input-field'}),
-#             'email': forms.EmailInput(attrs={'class': 'input-field'}),
-#             'phone': forms.TextInput(attrs={'class': 'input-field'}),
-#         }     
-
-# class DonorHealthCheckForm(forms.ModelForm):
-#     class Meta:
-#         model = DonorHealthCheck
-#         fields = ['age', 'weight', 'hemoglobin_level', 'has_disease']
-#         widgets = {
-#             'age': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Your age'}),
-#             'weight': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Weight in kg'}),
-#             'hemoglobin_level': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Hemoglobin (g/dL)'}),
-#             'has_disease': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-#         }
-        
-# class PatientRequestForm(forms.ModelForm):
-#     class Meta:
-#         model = Patient
-#         fields = ['blood_group', 'required_units', 'address', 'phone']
-#         widgets = {
-#             'blood_group': forms.Select(choices=BLOOD_GROUP_CHOICES, attrs={'class': 'form-control'}),
-#             'required_units': forms.NumberInput(attrs={'class': 'form-control', 'min': 1, 'value': 1}),
-#             'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
-#             'phone': forms.TextInput(attrs={'class': 'form-control'}),
-#         }
