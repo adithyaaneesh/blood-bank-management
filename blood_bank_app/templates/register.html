@@ -37,11 +37,17 @@
 
 <div class="register-card">
     <h2>Create Your Account</h2>
-    <form action="" method="post">
+    <!-- <form action="" method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="btn btn-success mt-3"><i class="fa-solid fa-user-plus"></i> Register</button>
+    </form> -->
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-danger">Register</button>
     </form>
+
     <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
 </div>
 </body>

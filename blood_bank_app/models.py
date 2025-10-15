@@ -5,7 +5,6 @@ User = get_user_model()
 
 class Credential(models.Model):
     ROLE_CHOICES = [
-        ('Admin','Admin'),
         ('Donor','Donor'),
         ('Patient','Patient'),
         ('Hospital','Hospital'),

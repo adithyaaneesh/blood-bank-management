@@ -26,10 +26,10 @@ class UserRegistrationForm(UserCreationForm):
         user.set_password(self.cleaned_data['password1'])
         if commit:
             user.save()
-            Credential.objects.create(
-                user=user,
-                role=self.cleaned_data['role']
-            )
+            # Credential.objects.create(
+            #     user=user,
+            #     role=self.cleaned_data['role']
+            # )
         return user
 
 class HospitalRegistrationForm(forms.ModelForm):
@@ -77,45 +77,3 @@ class HospitalRegistrationForm(forms.ModelForm):
         if commit:
             hospital.save()
         return hospital
-
-class LoginForm(AuthenticationForm):
-    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-
-
-ROLE_CHOICES = [
-    ('donor', 'Donor'),
-    ('patient', 'Patient'),
-]
-
-# class RegistrationForm(forms.ModelForm):
-#     username = forms.CharField(max_length=100)
-#     email = forms.EmailField()
-#     password = forms.CharField(widget=forms.PasswordInput)
-#     role = forms.ChoiceField(choices=ROLE_CHOICES, widget=forms.RadioSelect)
-#     phone = forms.CharField(max_length=15)
-#     gender = forms.ChoiceField(choices=GENDER_CHOICES)
-#     blood_group = forms.ChoiceField(choices=BLOOD_GROUP_CHOICES)
-#     address = forms.CharField(widget=forms.Textarea)
-#     age = forms.IntegerField(required=False, label="Age (Donor only)")
-#     required_units = forms.IntegerField(required=False, label="Required Units (Patient only)")
-#     name = forms.CharField(required=False, label="Hospital Name (Hospital only)")
-
-#     class Meta:
-#         model = User
-#         fields = ['username', 'email', 'password']
-
-#     def clean(self):
-#         cleaned_data = super().clean()
-#         role = cleaned_data.get('role')
-#         age = cleaned_data.get('age')
-#         name = cleaned_data.get('name')
-
-#         if role == 'donor' and not age:
-#             self.add_error('age', 'Donor must provide age.')
-#         elif role == 'hospital' and not name:
-#             self.add_error('name', 'Hospital must provide a name.')
-
-#         return cleaned_data
-
-

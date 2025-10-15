@@ -2,46 +2,63 @@ from pyexpat.errors import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .forms import UserRegistrationForm,HospitalRegistrationForm, LoginForm
-from .models import BloodStock, DonorForm, RequestForm, HospitalRequestForm
+from .forms import UserRegistrationForm,HospitalRegistrationForm
+from .models import BloodStock, DonorForm, RequestForm, HospitalRequestForm, Credential
 from django.contrib.auth import get_user_model
 from django.db.models import Sum
 
 User = get_user_model()
 
 
-def user_register(request):
-    if request.method == 'POST':
-        form_data = UserRegistrationForm(request.POST)
-        if form_data.is_valid():
-            form_data.save()
+def register(request):
+    if request.method == "POST":
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            role = form.cleaned_data['role']
+            Credential.objects.create(user=user, role=role)
             return redirect('login')
+        else:
+            print(form.errors)
     else:
-        form_data = UserRegistrationForm()
-    return render(request,'register.html',{'form':form_data}) 
+        form = UserRegistrationForm()
+    return render(request, 'register.html', {'form': form})
+
 
 def hospital_register(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = HospitalRegistrationForm(request.POST)
-        if form.is_valid:
-            form.save()
+        if form.is_valid():
+            hospital_user = form.save()
+            Credential.objects.create(user=hospital_user, role='Hospital')
             return redirect('login')
+        else:
+            print(form.errors)
     else:
-        form = HospitalRegistrationForm(request.POST)
-    return render(request,'hospital_register.html',{'form':form})
-
-
+        form = HospitalRegistrationForm()
+    return render(request, 'hospital_register.html', {'form': form})
 
 def user_login(request):
-    if request.method == 'POST':
-        user_data = LoginForm(request, data=request.POST) 
-        if user_data.is_valid():
-            user = user_data.get_user() 
+    admin_user = User.objects.filter(is_superuser=True).first()
+    if request.method == "POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
             login(request, user)
-            return redirect('contact')
-    else:
-        user_data = LoginForm()
-    return render(request, 'login.html', {'form':user_data})
+            if user.is_superuser:
+                return redirect('dashboard')
+            role = getattr(user.credential, 'role', None)
+            if role == 'Hospital':
+                return redirect('hospitalhome')
+            elif role == 'Patient':
+                return redirect('patienthome')
+            elif role == 'Donor':
+                return redirect('hospitalhome')
+            else:
+                return redirect('home')
+        return render(request, "login.html", {'error': 'Invalid username or password'})
+    return render(request, "login.html", {'admin_user': admin_user})
 
 
 def user_logout(request):
