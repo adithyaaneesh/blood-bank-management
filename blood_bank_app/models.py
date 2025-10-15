@@ -77,7 +77,7 @@ class RequestForm(models.Model):
         return self.firstname
 
 class HospitalRequestForm(models.Model):
-    hospitalname = models.TextField(max_length=20)
+    hospitalname = models.CharField(max_length=20)
     email = models.EmailField(max_length=20)
     phone = models.CharField(max_length=20)
     address = models.CharField(max_length=120)
