@@ -17,5 +17,7 @@ urlpatterns = [
     path('donateform/', views.donate_form, name='donateform'),
     path('requestform/', views.request_form, name='requestform'),
     path('hospitalhome/', views.hospital_home, name='hospitalhome'),
+    path('hospitalhome/', views.hospital_home, name='hospitalhome'),
+    path('hospitalrequest/', views.hospital_request_form, name='hospitalrequest'),
     path('hospitalstock/', views.hospital_stock, name='hospitalstock'),
 ]

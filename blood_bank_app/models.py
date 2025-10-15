@@ -34,10 +34,10 @@ class BloodStock(models.Model):
         return f"{self.blood_group} - {self.units} units"
 
 class DonorForm(models.Model):
-    firstname = models.CharField(max_length=20)
+    firstname = models.TextField(max_length=20)
     email = models.EmailField(max_length=50) 
     phone = models.CharField(max_length=15)
-    age = models.IntegerField()  
+    age = models.PositiveIntegerField(default=18)  
     blood_group = models.CharField(max_length=5, choices=[
         ('A+', 'A+'), ('A-', 'A-'),
         ('B+', 'B+'), ('B-', 'B-'),
@@ -56,10 +56,10 @@ class DonorForm(models.Model):
         return self.firstname
     
 class RequestForm(models.Model):
-    firstname = models.CharField(max_length=20)
+    firstname = models.TextField(max_length=20)
     email = models.EmailField(max_length=50) 
     phone = models.CharField(max_length=15)
-    age = models.IntegerField()
+    age = models.PositiveIntegerField()
     reason = models.CharField(max_length=50)
     blood_group = models.CharField(max_length=5, choices=[
         ('A+', 'A+'), ('A-', 'A-'),
@@ -75,3 +75,19 @@ class RequestForm(models.Model):
 
     def __str__(self):
         return self.firstname
+
+class HospitalRequestForm(models.Model):
+    hospitalname = models.TextField(max_length=20)
+    email = models.EmailField(max_length=20)
+    phone = models.CharField(max_length=20)
+    address = models.CharField(max_length=120)
+    blood_group = models.CharField(max_length=5, choices=[
+        ('A+', 'A+'), ('A-', 'A-'),
+        ('B+', 'B+'), ('B-', 'B-'),
+        ('AB+', 'AB+'), ('AB-', 'AB-'),
+        ('O+', 'O+'), ('O-', 'O-'),
+    ])
+    units = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return self.hospitalname

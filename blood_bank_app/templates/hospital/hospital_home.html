@@ -130,7 +130,7 @@
         <ul class="navbar-nav ms-auto">
           <li class="nav-item"><a class="nav-link active" href="{% url 'hospitalhome' %}">Home</a></li>
           <li class="nav-item"><a class="nav-link" href="{% url 'hospitalstock' %}">Blood Stocks</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'requestform' %}">Request Blood</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'hospitalrequest' %}">Request Blood</a></li>
           <li class="nav-item">
             <a class="nav-link logout" href="{% url 'logout' %}" onclick="return confirmLogout()">
               Logout <i class="fa-solid fa-right-from-bracket ms-1"></i>
@@ -142,7 +142,7 @@
   </nav>
   <section class="hero">
     <div class="container">
-      <h1>Welcome to Life Link Hospital Dashboard</h1>
+      <h1>Welcome to Life Link Hospital</h1>
       <p>Manage blood requests, check availability, and ensure life-saving blood reaches those in need — efficiently and reliably.</p>
       <a href="{% url 'hospitalstock' %}" class="btn btn-main">
         <i class="fa-solid fa-droplet me-2"></i> View Blood Stock

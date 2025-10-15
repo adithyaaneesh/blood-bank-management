@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegistrationForm, LoginForm
-from .models import BloodStock, DonorForm, RequestForm
+from .models import BloodStock, DonorForm, RequestForm, HospitalRequestForm
 from django.contrib.auth import get_user_model
 from django.db.models import Sum
 
@@ -143,6 +143,19 @@ def request_form(request):
 def hospital_home(request):
     stocks = BloodStock.objects.all().order_by('blood_group')
     return render(request, 'hospital/hospital_home.html',{'stocks':stocks})
+
+def hospital_request_form(request):
+    if request.method == 'POST':
+        HospitalRequestForm.objects.create(
+            hospitalname = request.POST.get('hospitalname'),
+            email = request.POST.get('email'),
+            phone = request.POST.get('phonenum'),
+            address = request.POST.get('address'),
+            blood_group = request.POST.get('blood_group'),
+            units = request.POST.get('units'),
+        )
+        return redirect('hospitalhome')
+    return render(request,'hospital/hospital_request_form.html')
 
 def hospital_stock(request):
     stocks = BloodStock.objects.all()
