@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegistrationForm, LoginForm
-from .models import BloodStock
+from .models import BloodStock, DonorForm
 from django.contrib.auth import get_user_model
 from django.db.models import Sum
 
@@ -108,9 +108,6 @@ def patient_home(request):
     stocks = BloodStock.objects.all().order_by('blood_group')
     return render(request, 'patient/patient_home.html',{'stocks':stocks})
 
-def donate_form(request):
-    return render(request, 'patient/donate_form.html')
-
 def request_form(request):
     return render(request, 'patient/request_form.html')
 
@@ -135,3 +132,19 @@ def hospital_stock(request):
     }
     return render(request, 'hospital/hospital_stocks.html', context)
 
+def donate_form(request):
+    if request.method == 'POST':
+        DonorForm.objects.create(
+            firstname = request.POST.get('fname'),
+            email = request.POST.get('email'),
+            phonenumber = request.POST.get('phonenum'),
+            age = request.POST.get('age'),
+            blood_group = request.POST.get('blood_group'),
+            units = request.POST.get('units'),
+            gender = request.POST.get('gender'),
+            last_donate_date = request.POST.get('donatedate'),
+            last_recieve_date = request.POST.get('recieveddate'),
+        )
+        messages.success(request, "Donation details submitted successfully!")
+        return redirect('donateform')
+    return render(request, 'patient/donate_form.html')

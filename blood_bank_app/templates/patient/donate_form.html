@@ -121,7 +121,7 @@
           <input type="tel" name="phonenum" class="form-control" placeholder="Phone Number" required>
         </div>
         <div class="mb-3">
-          <input type="number" name="age" class="form-control" placeholder="Age" required>
+          <input type="number" name="age" class="form-control" placeholder="Age" min="18" required>
         </div>
         <div class="mb-3">
           <select name="blood_group" class="form-select" required>
@@ -146,11 +146,15 @@
             <label class="form-check-label" for="female">Female</label>
           </div>
         </div>
-        <div class="mb-3">
-          <input type="date" name="donatedate" class="form-control" placeholder="Last Donate Date" required>
-        </div>
-        <div class="mb-3">
-          <input type="date" name="recieveddate" class="form-control" placeholder="Last Recieved Date" required>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="donatedate" class="form-label">Last Donate Date:</label>
+            <input type="date" id="donatedate" name="donatedate" class="form-control" required>
+          </div>
+          <div class="col-md-6">
+            <label for="recieveddate" class="form-label">Last Received Date:</label>
+            <input type="date" id="recieveddate" name="recieveddate" class="form-control" required>
+          </div>
         </div>
         <div class="text-center mt-4">
           <button type="submit" class="btn btn-submit">Submit</button>
