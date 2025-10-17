@@ -54,7 +54,7 @@ def user_login(request):
             elif role == 'Patient':
                 return redirect('patienthome')
             elif role == 'Donor':
-                return redirect('hospitalhome')
+                return redirect('donorhome')
             else:
                 return redirect('home')
         return render(request, "login.html", {'error': 'Invalid username or password'})
@@ -132,6 +132,9 @@ def delete_blood_stock(request, stock_id):
 def patient_home(request):
     stocks = BloodStock.objects.all().order_by('blood_group')
     return render(request, 'patient/patient_home.html',{'stocks':stocks})
+def donor_home(request):
+    stocks = BloodStock.objects.all().order_by('blood_group')
+    return render(request, 'donor/donor_home.html',{'stocks':stocks})
 
 def donate_form(request):
     if request.method == 'POST':
@@ -147,8 +150,8 @@ def donate_form(request):
             last_receive_date = request.POST.get('recieveddate'),
         )
         # messages.success(request,"Donation details submitted successfully!") 
-        return redirect('patienthome')
-    return render(request, 'patient/donate_form.html')
+        return redirect('donorhome')
+    return render(request, 'donor/donate_form.html')
 
 def request_form(request):
     if request.method == 'POST':

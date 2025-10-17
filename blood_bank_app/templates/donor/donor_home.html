@@ -4,125 +4,80 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Patient Home - Life Link</title>
-
-  <!-- Bootstrap & Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
   <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background: url('https://images.unsplash.com/photo-1625134673209-883c8a0f3c80?auto=format&fit=crop&w=1920&q=80')
-                  no-repeat center center/cover;
-      background-attachment: fixed;
-      position: relative;
-      min-height: 100vh;
+      background-color: #f8f9fa;
     }
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: rgba(255, 255, 255, 0.92);
-      z-index: -1;
-    }
-
-    /* Navbar */
     .navbar {
       background-color: #dc3545;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
-    .navbar .nav-link {
-      color: #fff !important;
-      font-weight: 500;
-      margin-left: 10px;
-      transition: 0.3s;
-    }
-
-    .navbar .nav-link:hover,
-    .navbar .nav-link.active {
-      color: #ffeaea !important;
-    }
-
-    /* Hero Section */
     .hero {
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 14px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
-      padding: 60px 40px;
-      margin: 60px auto 40px;
+      background: white;
+      color: black;
+      height: 65vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
       text-align: center;
-      width: 85%;
-      backdrop-filter: blur(6px);
+      padding: 40px;
     }
 
     .hero h1 {
-      font-weight: 700;
-      color: #b32a2a;
-      font-size: 2.5rem;
+      font-size: 2.8rem;
+      font-weight: bold;
       margin-bottom: 10px;
     }
 
     .hero p {
-      color: #444;
       font-size: 1rem;
-      max-width: 650px;
-      margin: 0 auto;
+      font-weight: lighter;
     }
 
-    /* Dashboard Summary Cards */
-    .summary-cards {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 25px;
-      margin-top: 30px;
-    }
-
-    .summary-card {
-      background: #fff;
-      border-radius: 14px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-      padding: 25px 20px;
-      width: 220px;
-      text-align: center;
-      transition: all 0.3s ease;
-    }
-
-    .summary-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-    }
-
-    .summary-card i {
-      font-size: 2.2rem;
+    .features i {
+      font-size: 38px;
       color: #dc3545;
       margin-bottom: 10px;
     }
 
-    .summary-card .count-number {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: #222;
+    .features h5 {
+      font-weight: 600;
+      font-size: 1.1rem;
     }
-
-    .summary-card p {
-      margin: 0;
-      font-weight: 500;
-      color: #555;
-    }
-
-    /* Blood Stock Table */
+    .summary-card {
+          flex: 1 1 200px;
+          background: #fff;
+          border-radius: 10px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+          padding: 20px;
+          text-align: center;
+          transition: transform 0.2s;
+      }
+      .summary-card:hover {
+          transform: translateY(-5px);
+      }
+      .summary-card i {
+          font-size: 32px;
+          color: red;
+          margin-bottom: 10px;
+      }
+      .summary-card .count-number {
+          font-size: 24px;
+          font-weight: 700;
+          color: #333;
+      }
     table {
       width: 100%;
       border-collapse: collapse;
-      border-radius: 14px;
+      background: #fff;
+      border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08);
     }
 
     thead {
@@ -131,57 +86,64 @@
     }
 
     th, td {
-      padding: 14px 18px;
+      padding: 14px 16px;
       text-align: center;
       font-size: 0.95rem;
+      border-bottom: 1px solid #f0f0f0;
     }
 
     tbody tr:hover {
-      background-color: #fff5f5;
-      transition: background 0.3s;
+      background-color: #fdf2f2;
+      transition: 0.3s;
     }
 
-    /* Contact Section */
+    .btn-primary.btn-sm {
+      background-color: #dc3545;
+      border: none;
+    }
+
+    .btn-primary.btn-sm:hover {
+      background-color: #b82a38;
+    }
+
     .contact-section {
-      background: rgba(255, 255, 255, 0.9);
-      padding: 60px 20px;
+      background: white;
+      padding: 50px 0;
       text-align: center;
-      backdrop-filter: blur(4px);
     }
 
     .contact-section h1 {
       color: #dc3545;
-      font-weight: 700;
+      font-size: 1.8rem;
       margin-bottom: 10px;
     }
 
     .contact-section p {
-      color: #555;
+      font-size: 0.95rem;
+      color: #666;
       margin-bottom: 25px;
     }
 
     .contact-card {
       max-width: 500px;
       margin: 0 auto;
-      background: #fff;
-      border-radius: 14px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-      padding: 30px;
+      background: #ffffff;
+      padding: 25px 30px;
+      border-radius: 12px;
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08);
     }
 
     .contact-card input,
     .contact-card textarea {
       font-size: 0.9rem;
-      border-radius: 6px;
-      border: 1px solid #ddd;
+      padding: 8px 10px;
     }
 
     .btn-submit {
       background-color: #dc3545;
-      border: none;
       color: #fff;
       font-weight: 500;
-      padding: 10px 25px;
+      font-size: 0.9rem;
       border-radius: 6px;
       transition: 0.3s;
     }
@@ -190,51 +152,31 @@
       background-color: #b82a38;
     }
 
-    /* Footer */
     footer {
       background-color: #212529;
-      color: #fff;
+      color: white;
       padding: 18px 0;
+      text-align: center;
       font-size: 0.9rem;
-      margin-top: 50px;
-    }
-
-    footer p {
-      margin: 0;
-      letter-spacing: 0.3px;
-    }
-
-    @media (max-width: 768px) {
-      .hero {
-        padding: 40px 20px;
-      }
-
-      .summary-card {
-        width: 100%;
-        max-width: 320px;
-      }
     }
   </style>
 </head>
-
 <body>
 
-  <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
-      <a class="navbar-brand fw-bold" href="#">
-        <i class="fa-solid fa-droplet me-2"></i>Life Link
-      </a>
+      <a class="navbar-brand fw-bold" href="#"><i class="fa-solid fa-droplet me-2"></i>Life Link</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link active" href="{% url 'patienthome' %}">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'requestform' %}">Request</a></li>
+          <li class="nav-item"><a class="nav-link active" href="{% url 'donorhome' %}">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'donateform' %}">Donate</a></li>
+          <!-- <li class="nav-item"><a class="nav-link" href="{% url 'requestform' %}">Request</a></li> -->
           <li class="nav-item">
-            <a class="nav-link logout" href="{% url 'logout' %}" onclick="return confirmLogout()">
-              Logout <i class="fa-solid fa-right-from-bracket"></i>
+            <a class="nav-link" class="logout" href="{% url 'logout' %}" onclick="return confirmLogout()">
+              Logout <i class="fa-solid fa-right-from-bracket"></i> 
             </a>
           </li>
         </ul>
@@ -242,43 +184,40 @@
     </div>
   </nav>
 
-  <!-- Hero Section -->
   <section class="hero">
-    <h1>Welcome, {{ request.user.username }}</h1>
-    <p>Stay informed about blood availability and make your contribution count in saving lives.</p>
+    <div class="container">
+      <h1>Welcome, {{ request.user.username }}</h1>
+      <p>Stay informed about blood availability and make your contribution count in saving lives.</p>
+    </div>
   </section>
-
-  <!-- Dashboard Cards -->
   <section>
-    <div class="col-md-10 p-4 mx-auto">
-      <h2 class="mb-4 fw-bold text-danger text-center">Patient Dashboard</h2>
+    <div class="col-md-10 p-4">
+      <h2 class="mb-4">Donor Dashboard</h2>
 
-      <div class="summary-cards">
+      <div class="summary-cards d-flex flex-wrap gap-4">
           <div class="summary-card">
               <i class="fa-solid fa-users"></i>
               <p class="count-number">25</p>
-              <p>Requests Made</p>
+              <p>Request Made</p>
           </div>
           <div class="summary-card">
               <i class="fa-solid fa-hand-holding-droplet"></i>
               <p class="count-number">80</p>
-              <p>Pending Requests</p>
+              <p>Pending Request</p>
           </div>
           <div class="summary-card">
               <i class="fa-solid fa-hospital"></i>
               <p class="count-number">12</p>
-              <p>Approved Requests</p>
+              <p>Approved Request</p>
           </div>
           <div class="summary-card">
               <i class="fa-solid fa-droplet"></i>
               <p class="count-number">54</p>
-              <p>Rejected Requests</p>
+              <p>Rejected Request</p>
           </div>
       </div>
     </div>
   </section>
-
-  <!-- Blood Stock Table -->
   <section class="py-5 text-center">
     <div class="container">
       <h2 class="fw-bold mb-4 text-danger">Blood In Stock</h2>
@@ -299,22 +238,34 @@
               <td>{{ stock.last_updated|date:"Y-m-d" }}</td>
             </tr>
             {% empty %}
-            <tr><td colspan="3">No stock records found.</td></tr>
+            <tr><td colspan="4">No stock records found.</td></tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
     </div>
   </section>
+  <section class="my-4">
+  <div class="card shadow-sm p-4 mx-auto" style="max-width: 700px;">
+    <h3 class="card-title mb-3">You cannot donate blood if:</h3>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">You had hepatitis B, hepatitis C, HIV/AIDS, or sexually transmitted infections.</li>
+      <li class="list-group-item">You have chronic diseases like diabetes, heart disease, cancer, or severe asthma (unless cleared by a doctor).</li>
+      <li class="list-group-item">You have taken antibiotics, steroids, or alcohol in the last 24–48 hours.</li>
+      <li class="list-group-item">You’ve undergone major surgery or tattooing/piercing in the past 6 months.</li>
+      <li class="list-group-item">You’re pregnant, breastfeeding, or have recently given birth (within 6 months).</li>
+      <li class="list-group-item">You recently received a COVID-19 vaccine — usually wait 14 days before donating.</li>
+    </ul>
+  </div>
+</section>
 
-  <!-- Contact Form -->
   <section class="contact-section">
     <div class="container">
       <h1>Contact Us</h1>
       <p class="lead mt-2">We’re here to help you. Reach out with any questions or feedback!</p>
     </div>
     <div class="contact-card">
-      <form method="post">
+      <form method="POST">
         {% csrf_token %}
         <div class="mb-2">
           <input type="text" name="fname" class="form-control" placeholder="Full Name" required>
@@ -329,23 +280,19 @@
           <textarea name="message" class="form-control" rows="3" placeholder="Message..." required></textarea>
         </div>
         <div class="text-center mt-3">
-          <button type="submit" class="btn btn-submit">Send Message</button>
+          <button type="submit" class="btn btn-submit px-4">Send Message</button>
         </div>
       </form>
     </div>
   </section>
-
-  <!-- Footer -->
   <footer>
     <p>© 2025 Life Link | Designed by Adithya</p>
   </footer>
-
-  <script>
+<script>
     function confirmLogout() {
-      return confirm("Are you sure you want to log out?");
+        return confirm("Are you sure you want to log out?");
     }
-  </script>
-
+</script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

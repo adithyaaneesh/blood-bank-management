@@ -15,6 +15,7 @@ urlpatterns = [
     path('bloodstock/update/<int:stock_id>/', views.update_blood_stock, name='update_blood_stock'),
     path('bloodstock/delete/<int:stock_id>/', views.delete_blood_stock, name='delete_blood_stock'),
     path('patienthome/', views.patient_home, name='patienthome'),
+    path('donorhome/', views.donor_home, name='donorhome'),
     path('donateform/', views.donate_form, name='donateform'),
     path('requestform/', views.request_form, name='requestform'),
     path('hospitalhome/', views.hospital_home, name='hospitalhome'),
