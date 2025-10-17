@@ -25,5 +25,6 @@ urlpatterns = [
     path('donors/', views.admin_donors, name='admin_donors'),
     path('patients/', views.admin_patients, name='admin_patients'),
     path('hospitals/', views.admin_hospitals, name='admin_hospitals'),
+    path('admin_blood_request/', views.admin_blood_request, name='admin_blood_request'),
 
 ]

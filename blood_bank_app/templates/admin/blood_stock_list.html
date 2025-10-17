@@ -112,17 +112,20 @@
                     <a class="nav-link" href="{% url 'dashboard' %}">
                         <i class="fa-solid fa-home"></i> Dashboard
                     </a>
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="{% url 'admin_patients' %}">
                         <i class="fa-solid fa-users"></i> Patients
                     </a>
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="{% url 'admin_hospitals' %}">
                         <i class="fa-solid fa-hospital"></i> Hospitals
                     </a>
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="{% url 'admin_donors' %}">
                         <i class="fa-solid fa-hand-holding-droplet"></i> Donors
                     </a>
                     <a class="nav-link active" href="{% url 'blood_stock_list' %}">
                         <i class="fa-solid fa-droplet"></i> Blood Stock
+                    </a>
+                    <a class="nav-link" href="{% url 'admin_blood_request' %}">
+                        <i class="fa-solid fa-droplet"></i> Blood Request
                     </a>
                 </nav>
             </div>

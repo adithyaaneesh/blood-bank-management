@@ -213,3 +213,12 @@ def admin_patients(request):
 def admin_hospitals(request):
     hospitals = Credential.objects.filter(role='Hospital').select_related('user')
     return render(request, 'admin/admin_hospitals.html', {'hospitals': hospitals})
+
+def admin_blood_request(request):
+    hospitals = Credential.objects.filter(role='Hospital').select_related('user')
+    donors = Credential.objects.filter(role='Donor').select_related('user')
+    context = {
+        'hospitals': hospitals,
+        'donors': donors
+    }
+    return render(request, 'admin/admin_blood_request.html', context)

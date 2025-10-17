@@ -117,16 +117,15 @@
                     <a class="nav-link" href="{% url 'admin_hospitals' %}">
                         <i class="fa-solid fa-hospital"></i> Hospitals
                     </a>
-                    <a class="nav-link active" href="{% url 'admin_donors' %}">
+                    <a class="nav-link" href="{% url 'admin_donors' %}">
                         <i class="fa-solid fa-hand-holding-droplet"></i> Donors
                     </a>
                     <a class="nav-link" href="{% url 'blood_stock_list' %}">
                         <i class="fa-solid fa-droplet"></i> Blood Stock
                     </a>
-                    <a class="nav-link" href="{% url 'admin_blood_request' %}">
+                    <a class="nav-link active" href="{% url 'admin_blood_request' %}">
                         <i class="fa-solid fa-droplet"></i> Blood Request
                     </a>
-                    
                 </nav>
             </div>
 
@@ -134,7 +133,7 @@
             <div class="col-md-10 p-4">
                 <div class="card-dashboard">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2 class="mb-0"><i class="fa-solid fa-hand-holding-droplet"></i> Registered Donors</h2>
+                        <h2 class="mb-0"><i class="fa-solid fa-hand-holding-droplet"></i>Blood Requests</h2>
                     </div>
 
                     <div class="table-responsive">
@@ -145,6 +144,7 @@
                                     <th>Email</th>
                                     <th>Date Joined</th>
                                     <th>Role</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -154,10 +154,14 @@
                                     <td>{{ donor.user.email }}</td>
                                     <td>{{ donor.user.date_joined|date:"Y-m-d" }}</td>
                                     <td><span class="badge bg-success">{{ donor.role }}</span></td>
+                                    <td>
+                                        <a href="#" class="btn btn-success btn-sm">Approve</a>
+                                        <a href="#" class="btn btn-danger btn-sm" >Reject</a>
+                                    </td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="4" class="text-center text-muted">No donor users found.</td>
+                                    <td colspan="4" class="text-center text-muted">No requests found.</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
