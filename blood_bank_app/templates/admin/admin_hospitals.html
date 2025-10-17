@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Donors</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(90deg, #1F78C9, #007BFF);
+            padding: 15px 30px;
+        }
+        .navbar h1 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .dropdown .btn {
+            background-color: #fff;
+            color: #1F78C9;
+            font-weight: 500;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 14px;
+        }
+        .dropdown .btn:hover {
+            background-color: #e9f3ff;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            min-height: 100vh;
+            background: #fff;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+        }
+        .sidebar .nav-link {
+            color: #333;
+            font-weight: 500;
+            padding: 10px 15px;
+        }
+        .sidebar .nav-link.active {
+            background-color: #1F78C9;
+            color: #fff;
+            border-radius: 6px;
+        }
+        .sidebar .nav-link:hover {
+            background-color: #85b3df;
+            color: #fff;
+            border-radius: 6px;
+        }
+
+        /* Table + Cards */
+        .card-dashboard {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 20px;
+        }
+
+        h2 {
+            color: #1F78C9;
+            font-weight: 600;
+        }
+
+        .table th {
+            background-color: #1F78C9;
+            color: white;
+            text-align: center;
+        }
+        .table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .badge {
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+     <nav class="navbar d-flex justify-content-between align-items-center">
+        <h1 class="text-white mb-0">Admin Dashboard</h1>
+        <div class="dropdown">
+            <button class="btn btn-light dropdown-toggle" type="button" id="adminDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa-solid fa-user-circle"></i> {{ request.user.username }}
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
+                <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user"></i> Profile</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item text-danger" href="{% url 'logout' %}" onclick="return confirmLogout()">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 p-3 sidebar">
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="{% url 'dashboard' %}">
+                        <i class="fa-solid fa-home"></i> Dashboard
+                    </a>
+                    <a class="nav-link" href="{% url 'admin_patients' %}">
+                        <i class="fa-solid fa-users"></i> Patients
+                    </a>
+                    <a class="nav-link active" href="{% url 'admin_hospitals' %}">
+                        <i class="fa-solid fa-hospital"></i> Hospitals
+                    </a>
+                    <a class="nav-link" href="{% url 'admin_donors' %}">
+                        <i class="fa-solid fa-hand-holding-droplet"></i> Donors
+                    </a>
+                    <a class="nav-link" href="{% url 'blood_stock_list' %}">
+                        <i class="fa-solid fa-droplet"></i> Blood Stock
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-10 p-4">
+                <div class="card-dashboard">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="mb-0"><i class="fa-solid fa-hand-holding-droplet"></i> Registered Donors</h2>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Date Joined</th>
+                                    <th>Role</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for hospital in hospitals %}
+                                <tr>
+                                    <td>{{ hospital.user.username }}</td>
+                                    <td>{{ hospital.user.email }}</td>
+                                    <td>{{ hospital.user.date_joined|date:"Y-m-d" }}</td>
+                                    <td><span class="badge bg-success">{{ hospital.role }}</span></td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">No hospitals users found.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function confirmLogout() {
+            return confirm("Are you sure you want to log out?");
+        }
+    </script>
+</body>
+</html>

@@ -92,10 +92,14 @@
             color: rgb(210, 82, 82);
             margin-bottom: 10px;
         }
-        h2 {
+        h2, h3 {
             color: #1F78C9;
             font-weight: 600;
             margin-bottom: 20px;
+        }
+        h3 {
+            color: rgb(236, 73, 73);
+
         }
     </style>
 </head>
@@ -125,13 +129,13 @@
                     <a class="nav-link active" href="{% url 'dashboard' %}">
                         <i class="fa-solid fa-home"></i> Dashboard
                     </a>
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="{% url 'admin_patients' %}">
                         <i class="fa-solid fa-users"></i> Patients
                     </a>
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="{% url 'admin_hospitals' %}">
                         <i class="fa-solid fa-hospital"></i> Hospitals
                     </a>
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="{% url 'admin_donors' %}">
                         <i class="fa-solid fa-hand-holding-droplet"></i> Donors
                     </a>
                     <a class="nav-link" href="{% url 'blood_stock_list' %}">
@@ -165,8 +169,8 @@
                     </div>
                 </div>
 
-                <h2 class="mb-4">Blood Group Stock</h2>
-                <div class="summary-cards">
+                <h3 class="mb-4">Blood Group Stock</h3>
+                <div class="summary-cards small-card">
                     <div class="summary-card">
                         <i class="fa-solid fa-droplet"></i>
                         <p class="count-number">{{ a_positive }}</p>

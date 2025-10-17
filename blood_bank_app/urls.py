@@ -22,4 +22,8 @@ urlpatterns = [
     path('hospitalhome/', views.hospital_home, name='hospitalhome'),
     path('hospitalrequest/', views.hospital_request_form, name='hospitalrequest'),
     path('hospitalstock/', views.hospital_stock, name='hospitalstock'),
+    path('donors/', views.admin_donors, name='admin_donors'),
+    path('patients/', views.admin_patients, name='admin_patients'),
+    path('hospitals/', views.admin_hospitals, name='admin_hospitals'),
+
 ]

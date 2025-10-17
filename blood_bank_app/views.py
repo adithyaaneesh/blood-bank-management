@@ -202,3 +202,14 @@ def hospital_stock(request):
     }
     return render(request, 'hospital/hospital_stocks.html', context)
 
+def admin_donors(request):
+    donors = Credential.objects.filter(role='Donor').select_related('user')
+    return render(request, 'admin/admin_donors.html', {'donors': donors})
+
+def admin_patients(request):
+    patients = Credential.objects.filter(role='Patient').select_related('user')
+    return render(request, 'admin/admin_patients.html', {'patients': patients})
+
+def admin_hospitals(request):
+    hospitals = Credential.objects.filter(role='Hospital').select_related('user')
+    return render(request, 'admin/admin_hospitals.html', {'hospitals': hospitals})
