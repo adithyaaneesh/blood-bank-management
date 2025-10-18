@@ -43,23 +43,34 @@ def user_login(request):
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
+        selected_role = request.POST.get('role')
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            login(request, user)
-            if user.is_superuser:
+            if user.is_superuser and selected_role == 'Admin':
+                login(request, user)
                 return redirect('dashboard')
             role = getattr(user.credential, 'role', None)
-            if role == 'Hospital':
-                return redirect('hospitalhome')
-            elif role == 'Patient':
-                return redirect('patienthome')
-            elif role == 'Donor':
-                return redirect('donorhome')
+            if role == selected_role:
+                login(request, user)
+                if role == 'Hospital':
+                    return redirect('hospitalhome')
+                elif role == 'Patient':
+                    return redirect('patienthome')
+                elif role == 'Donor':
+                    return redirect('donateform')
+                else:
+                    return redirect('home')
             else:
-                return redirect('home')
-        return render(request, "login.html", {'error': 'Invalid username or password'})
-    return render(request, "login.html", {'admin_user': admin_user})
+                return render(request, "login.html", {
+                    'error': "Selected role doesn't match your account.",
+                    'admin_user': admin_user
+                })
+        return render(request, "login.html", {
+            'error': 'Invalid username or password',
+            'admin_user': admin_user
+        })
 
+    return render(request, "login.html", {'admin_user': admin_user})
 
 def user_logout(request):
     logout(request)
@@ -138,20 +149,23 @@ def donor_home(request):
 
 def donate_form(request):
     if request.method == 'POST':
+        consent = request.POST.get('consent')
+        if not consent:
+            return render(request, 'donor/donate_form.html', {'error': 'Please provide consent before donating.'})
         DonorForm.objects.create(
-            firstname = request.POST.get('fname'),
-            email = request.POST.get('email'),
-            phone = request.POST.get('phonenum'),
-            age = request.POST.get('age'),
-            blood_group = request.POST.get('blood_group'),
-            units = request.POST.get('units'),
-            gender = request.POST.get('gender'),
-            last_donate_date = request.POST.get('donatedate'),
-            last_receive_date = request.POST.get('recieveddate'),
+            firstname=request.POST.get('fname'),
+            email=request.POST.get('email'),
+            phone=request.POST.get('phonenum'),
+            age=request.POST.get('age'),
+            blood_group=request.POST.get('blood_group'),
+            units=request.POST.get('units'),
+            gender=request.POST.get('gender'),
+            last_donate_date=request.POST.get('donatedate'),
+            last_receive_date=request.POST.get('recieveddate'),
         )
-        # messages.success(request,"Donation details submitted successfully!") 
         return redirect('donorhome')
     return render(request, 'donor/donate_form.html')
+
 
 def request_form(request):
     if request.method == 'POST':

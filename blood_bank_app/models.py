@@ -3,11 +3,34 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+
+BLOOD_GROUP_CHOICES = [
+    ('A+', 'A+'),
+    ('A-', 'A-'),
+    ('B+', 'B+'),
+    ('B-', 'B-'),
+    ('AB+', 'AB+'),
+    ('AB-', 'AB-'),
+    ('O+', 'O+'),
+    ('O-', 'O-'),
+]
+
+class Donor(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+    blood_group = models.CharField(max_length=3, choices=BLOOD_GROUP_CHOICES)
+    units = models.PositiveIntegerField()
+    donation_date = models.DateField()
+
+    def __str__(self):
+        return f"{self.name} ({self.blood_group})"
+    
 class Credential(models.Model):
     ROLE_CHOICES = [
         ('Donor','Donor'),
         ('Patient','Patient'),
         ('Hospital','Hospital'),
+        ('admin', 'Admin'),
     ]
 
     role = models.CharField(max_length=10,choices=ROLE_CHOICES,default='Donor')
@@ -37,12 +60,7 @@ class DonorForm(models.Model):
     email = models.EmailField(max_length=50) 
     phone = models.CharField(max_length=15)
     age = models.PositiveIntegerField(default=18)  
-    blood_group = models.CharField(max_length=5, choices=[
-        ('A+', 'A+'), ('A-', 'A-'),
-        ('B+', 'B+'), ('B-', 'B-'),
-        ('AB+', 'AB+'), ('AB-', 'AB-'),
-        ('O+', 'O+'), ('O-', 'O-'),
-    ])
+    blood_group = models.CharField(max_length=5, choices=BLOOD_GROUP_CHOICES)
     units = models.IntegerField()
     gender = models.CharField(max_length=10, choices=[
         ('Male', 'Male'),
@@ -60,12 +78,7 @@ class RequestForm(models.Model):
     phone = models.CharField(max_length=15)
     age = models.PositiveIntegerField()
     reason = models.CharField(max_length=50)
-    blood_group = models.CharField(max_length=5, choices=[
-        ('A+', 'A+'), ('A-', 'A-'),
-        ('B+', 'B+'), ('B-', 'B-'),
-        ('AB+', 'AB+'), ('AB-', 'AB-'),
-        ('O+', 'O+'), ('O-', 'O-'),
-    ])
+    blood_group = models.CharField(max_length=5,choices=BLOOD_GROUP_CHOICES)
     units = models.IntegerField()
     gender = models.CharField(max_length=10, choices=[
         ('Male', 'Male'),
@@ -80,12 +93,7 @@ class HospitalRequestForm(models.Model):
     email = models.EmailField(max_length=20)
     phone = models.CharField(max_length=20)
     address = models.CharField(max_length=120)
-    blood_group = models.CharField(max_length=5, choices=[
-        ('A+', 'A+'), ('A-', 'A-'),
-        ('B+', 'B+'), ('B-', 'B-'),
-        ('AB+', 'AB+'), ('AB-', 'AB-'),
-        ('O+', 'O+'), ('O-', 'O-'),
-    ])
+    blood_group = models.CharField(max_length=5,choices=BLOOD_GROUP_CHOICES)
     units = models.PositiveIntegerField(default=0)
 
     def __str__(self):

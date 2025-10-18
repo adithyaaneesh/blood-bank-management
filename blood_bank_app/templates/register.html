@@ -3,47 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title>Register | Life Link</title>
+
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
-    <style>
-        body {
-            background-color: #f5f7fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .register-card {
-            max-width: 500px;
-            margin: 80px auto;
-            background: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        .register-card h2 {
-            text-align: center;
-            color: #1F78C9;
-            margin-bottom: 25px;
-        }
-        .register-card button {
-            width: 100%;
-        }
-        .register-card p {
-            margin-top: 15px;
-            text-align: center;
-        }
-    </style>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+  <style>
+    body {
+        background: linear-gradient(135deg, #74ABE2, #5563DE);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .register-card {
+        background: #fff;
+        width: 100%;
+        max-width: 360px; /* smaller width */
+        padding: 30px 28px; /* reduced padding */
+        border-radius: 18px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        margin: 20px 0;
+    }
+
+    .register-card h2 {
+        text-align: center;
+        color: #3742fa;
+        font-weight: 700;
+        font-size: 1.4rem; /* slightly smaller title */
+        margin-bottom: 20px;
+    }
+
+    .icon {
+        color: #3742fa;
+        margin-right: 8px;
+        font-size: 1.1rem;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #d1d1d1;
+        transition: 0.3s;
+    }
+
+    .form-control:focus {
+        border-color: #3742fa;
+        box-shadow: 0 0 6px rgba(55,66,250,0.25);
+    }
+
+    label {
+        font-weight: 500;
+        color: #444;
+        font-size: 14px;
+    }
+
+    .role-choice {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-top: 6px;
+    }
+
+    .role-item {
+        position: relative;
+    }
+
+    .role-item input[type="radio"] {
+        display: none;
+    }
+
+    .role-item label {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px 14px; 
+        border-radius: 25px;
+        background-color: #f2f3f7;
+        color: #555;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 13px;
+        transition: all 0.25s ease;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .role-item label:hover {
+        background-color: #eaf0ff;
+        transform: translateY(-2px);
+    }
+
+    .role-item input[type="radio"]:checked + label {
+        background: linear-gradient(135deg, #5563DE, #3742fa);
+        color: white;
+        box-shadow: 0 4px 10px rgba(55,66,250,0.4);
+        border-color: #3742fa;
+    }
+
+    .role-item .fa-solid {
+        font-size: 13px;
+    }
+
+    .btn-register {
+        width: 100%;
+        background: linear-gradient(135deg, #3742fa, #5563DE);
+        color: #fff;
+        font-weight: 600;
+        border-radius: 10px;
+        padding: 10px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 3px 8px rgba(55,66,250,0.3);
+    }
+
+    .btn-register:hover {
+        transform: translateY(-2px);
+        background: linear-gradient(135deg, #2f35d3, #4655e5);
+        box-shadow: 0 5px 12px rgba(55,66,250,0.45);
+    }
+
+    .text-muted {
+        font-size: 13px;
+    }
+
+    .text-muted a {
+        text-decoration: none;
+        color: #3742fa;
+        font-weight: 500;
+    }
+
+    .text-muted a:hover {
+        text-decoration: underline;
+    }
+</style>
+
 </head>
 <body>
 
 <div class="register-card">
-    <h2>Create Your Account</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-success mt-3"><i class="fa-solid fa-user-plus"></i>>Register</button>
+    <h2><i class="fa-solid fa-user-plus icon"></i>Create Your Account</h2>
+    <form method="post" novalidate>
+        {% csrf_token %}        
+        <div class="mb-3">
+            {{ form.username.label_tag }}
+            {{ form.username }}
+        </div>
+        <div class="mb-3">
+            {{ form.email.label_tag }}
+            {{ form.email }}
+        </div>
+        <div class="mb-3">
+            {{ form.password1.label_tag }}
+            {{ form.password1 }}
+        </div>
+        <div class="mb-3">
+            {{ form.password2.label_tag }}
+            {{ form.password2 }}
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Select Role:</label>
+            <div class="role-choice">
+                {% for radio in form.role %}
+                    <div class="role-item">
+                        {{ radio.tag }}
+                        {% if radio.choice_label == 'Donor' %}
+                            <label for="{{ radio.id_for_label }}"><i class="fa-solid fa-heart"></i> {{ radio.choice_label }}</label>
+                        {% elif radio.choice_label == 'Patient' %}
+                            <label for="{{ radio.id_for_label }}"><i class="fa-solid fa-bed-pulse"></i> {{ radio.choice_label }}</label>
+                        {% elif radio.choice_label == 'Hospital' %}
+                            <label for="{{ radio.id_for_label }}"><i class="fa-solid fa-hospital"></i> {{ radio.choice_label }}</label>
+                        <!-- {% elif radio.choice_label == 'Admin' %}
+                            <label for="{{ radio.id_for_label }}"><i class="fa-solid fa-user-shield"></i> {{ radio.choice_label }}</label> -->
+                        {% else %}
+                            <label for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-register mt-3">
+            <i class="fa-solid fa-right-to-bracket"></i> Register
+        </button>
     </form>
 
-    <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+    <p class="text-center text-muted mt-4">
+        Already have an account? <a href="{% url 'login' %}">Login</a>
+    </p>
 </div>
+
 </body>
 </html>
