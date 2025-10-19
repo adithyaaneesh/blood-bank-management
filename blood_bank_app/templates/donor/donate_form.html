@@ -88,14 +88,14 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="{% url 'donorhome' %}">Home</a></li>
+          <!-- <li class="nav-item"><a class="nav-link" href="{% url 'donorhome' %}">Home</a></li> -->
           <li class="nav-item"><a class="nav-link active" href="{% url 'donateform' %}">Donate</a></li>
           <!-- <li class="nav-item"><a class="nav-link" href="{% url 'requestform' %}">Request</a></li> -->
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a class="nav-link" class="logout" href="{% url 'logout' %}" onclick="return confirmLogout()">
               Logout <i class="fa-solid fa-right-from-bracket"></i> 
             </a>
-          </li>
+          </li> -->
         </ul>
       </div>
     </div>
@@ -109,7 +109,7 @@
     </div>
 
     <div class="form-card">
-        <form method="post">
+        <form method="POST">
             {% csrf_token %}
             <div class="mb-3">
             <input type="text" name="fname" class="form-control" placeholder="Full Name" required>
@@ -151,7 +151,7 @@
             <div class="row mb-3">
             <div class="col-md-6">
                 <label for="donatedate" class="form-label">Last Donate Date:</label>
-                <input type="date" id="donatedate" name="donatedate" class="form-control" required>
+                <input type="date" id="donatedate" name="donatedate" class="form-control">
             </div>
             <div class="col-md-6">
                 <label for="recieveddate" class="form-label">Last Received Date:</label>

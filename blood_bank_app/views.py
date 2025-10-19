@@ -148,21 +148,32 @@ def donor_home(request):
     return render(request, 'donor/donor_home.html',{'stocks':stocks})
 
 def donate_form(request):
-    if request.method == 'POST':
-        consent = request.POST.get('consent')
-        if not consent:
-            return render(request, 'donor/donate_form.html', {'error': 'Please provide consent before donating.'})
-        DonorForm.objects.create(
-            firstname=request.POST.get('fname'),
-            email=request.POST.get('email'),
-            phone=request.POST.get('phonenum'),
-            age=request.POST.get('age'),
-            blood_group=request.POST.get('blood_group'),
-            units=request.POST.get('units'),
-            gender=request.POST.get('gender'),
-            last_donate_date=request.POST.get('donatedate'),
-            last_receive_date=request.POST.get('recieveddate'),
+    if request.method == "POST":
+        fname = request.POST.get('fname')
+        email = request.POST.get('email')
+        phone = request.POST.get('phonenum')
+        age = request.POST.get('age')
+        blood_group = request.POST.get('blood_group')
+        units = request.POST.get('units')
+        gender = request.POST.get('gender')
+        last_donate = request.POST.get('donatedate') or None
+        last_receive = request.POST.get('recieveddate') or None
+        if last_donate == "":
+            last_donate = None
+        if last_receive == "":
+            last_receive = None
+        donor = DonorForm(
+            firstname=fname,
+            email=email,
+            phone=phone,
+            age=age,
+            blood_group=blood_group,
+            units=units,
+            gender=gender,
+            last_donate_date=last_donate,
+            last_receive_date=last_receive,
         )
+        donor.save()
         return redirect('donorhome')
     return render(request, 'donor/donate_form.html')
 

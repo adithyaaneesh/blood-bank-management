@@ -115,6 +115,30 @@
             text-align: center;
             font-size: 14px;
         }
+       .credentials-box {
+            background: #eef3ff;
+            border: 1px solid #d0d8ff;
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 13px;
+            color: #2c3e50;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .credentials-box strong {
+            color: #3742fa;
+            font-weight: 600;
+        }
+
+        .cred-line {
+            color: #444;
+            font-size: 13px;
+        }
+
+        #defaultMsg {
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -130,8 +154,6 @@
             {% csrf_token %}
             <input type="text" name="username" class="form-control mb-3" placeholder="Username" required>
             <input type="password" name="password" class="form-control mb-3" placeholder="Password" required>
-
-            <!-- Role Selection -->
             <div class="role-choice">
                 <div class="role-item">
                     <input type="radio" id="admin" name="role" value="Admin" required>
@@ -150,7 +172,20 @@
                     <label for="hospital"><i class="fa-solid fa-hospital"></i> Hospital</label>
                 </div>
             </div>
-
+            <div id="credentialsBox" class="credentials-box mt-2 text-center">
+                <strong id="roleName" class="d-block mb-1 text-primary">💡 Tip</strong>
+                <div id="defaultMsg" class="text-secondary small">
+                    Tap a role above to view testing credentials.
+                </div>
+                <div id="credDetails" style="display: none;">
+                    <div class="cred-line">
+                        <i class="fa-solid fa-user me-1"></i> <span id="testUsername"></span>
+                    </div>
+                    <div class="cred-line">
+                        <i class="fa-solid fa-lock me-1"></i> <span id="testPassword"></span>
+                    </div>
+                </div>
+            </div>
             <button type="submit" class="btn btn-login w-100 mt-2">
                 <i class="fa-solid fa-arrow-right-to-bracket"></i> Login
             </button>
@@ -160,6 +195,34 @@
             Don't have an account? <a href="{% url 'register' %}">Register</a>
         </p>
     </div>
+<script>
+    const credentials = {
+        'Admin': { username: 'admin', password: 'admin' },
+        'Donor': { username: 'donor', password: 'donor123' },
+        'Patient': { username: 'patient', password: 'patient123' },
+        'Hospital': { username: 'hospital', password: 'hospital123' }
+    };
 
+    const roleInputs = document.querySelectorAll('input[name="role"]');
+    const roleName = document.getElementById('roleName');
+    const testUsername = document.getElementById('testUsername');
+    const testPassword = document.getElementById('testPassword');
+    const defaultMsg = document.getElementById('defaultMsg');
+    const credDetails = document.getElementById('credDetails');
+
+    roleInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            const role = this.value;
+            const creds = credentials[role];
+            if (creds) {
+                roleName.textContent = `${role} Login Credentials`;
+                testUsername.textContent = creds.username;
+                testPassword.textContent = creds.password;
+                defaultMsg.style.display = 'none';
+                credDetails.style.display = 'block';
+            }
+        });
+    });
+</script>
 </body>
 </html>
