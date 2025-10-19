@@ -128,36 +128,40 @@
                     </a>
                     
                 </nav>
-            </div>
-
-            <!-- Main Content -->
-            <div class="col-md-10 p-4">
+            </div>            <div class="col-md-10 p-4">
                 <div class="card-dashboard">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h2 class="mb-0"><i class="fa-solid fa-hand-holding-droplet"></i> Registered Donors</h2>
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover align-middle">
-                            <thead>
+                        <table class="table table-bordered table-striped">
+                            <thead class="table-danger">
                                 <tr>
-                                    <th>Username</th>
+                                    <th>Name</th>
                                     <th>Email</th>
-                                    <th>Date Joined</th>
-                                    <th>Role</th>
+                                    <th>Blood Group</th>
+                                    <th>Units</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for donor in donors %}
                                 <tr>
-                                    <td>{{ donor.user.username }}</td>
-                                    <td>{{ donor.user.email }}</td>
-                                    <td>{{ donor.user.date_joined|date:"Y-m-d" }}</td>
-                                    <td><span class="badge bg-success">{{ donor.role }}</span></td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="4" class="text-center text-muted">No donor users found.</td>
+                                    <td>{{ donor.firstname }}</td>
+                                    <td>{{ donor.email }}</td>
+                                    <td>{{ donor.blood_group }}</td>
+                                    <td>{{ donor.units }}</td>
+                                    <td>{{ donor.status }}</td>
+                                    <td>
+                                        {% if donor.status == 'Pending' %}
+                                            <a href="{% url 'update_donor_status' donor.id 'Approved' %}" class="btn btn-success btn-sm">Approve</a>
+                                            <a href="{% url 'update_donor_status' donor.id 'Rejected' %}" class="btn btn-danger btn-sm">Reject</a>
+                                        {% else %}
+                                            No action
+                                        {% endif %}
+                                    </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

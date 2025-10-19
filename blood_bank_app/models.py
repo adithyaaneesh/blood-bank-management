@@ -25,6 +25,9 @@ class Donor(models.Model):
     def __str__(self):
         return f"{self.name} ({self.blood_group})"
     
+
+
+    
 class Credential(models.Model):
     ROLE_CHOICES = [
         ('Donor','Donor'),
@@ -56,21 +59,41 @@ class BloodStock(models.Model):
         return f"{self.blood_group} - {self.units} units"
 
 class DonorForm(models.Model):
-    firstname = models.TextField(max_length=20)
-    email = models.EmailField(max_length=50) 
-    phone = models.CharField(max_length=15)
-    age = models.PositiveIntegerField(default=18)  
-    blood_group = models.CharField(max_length=5, choices=BLOOD_GROUP_CHOICES)
-    units = models.IntegerField()
-    gender = models.CharField(max_length=10, choices=[
+    BLOOD_GROUP_CHOICES = [
+        ('A+', 'A+'), ('A-', 'A-'),
+        ('B+', 'B+'), ('B-', 'B-'),
+        ('AB+', 'AB+'), ('AB-', 'AB-'),
+        ('O+', 'O+'), ('O-', 'O-'),
+    ]
+
+    GENDER_CHOICES = [
         ('Male', 'Male'),
         ('Female', 'Female'),
-    ]) 
+    ]
+
+    firstname = models.CharField(max_length=50)
+    email = models.EmailField()
+    phone = models.CharField(max_length=15)
+    age = models.PositiveIntegerField(default=18)
+    blood_group = models.CharField(max_length=5, choices=BLOOD_GROUP_CHOICES)
+    units = models.PositiveIntegerField()
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     last_donate_date = models.DateField(null=True, blank=True)
     last_receive_date = models.DateField(null=True, blank=True)
+    consent = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Approved', 'Approved'),
+        ('Rejected', 'Rejected'),
+    ]
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
+    approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        return self.firstname
+        return f"{self.firstname} - {self.status}"
+
     
 class RequestForm(models.Model):
     firstname = models.TextField(max_length=20)

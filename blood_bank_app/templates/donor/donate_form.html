@@ -88,7 +88,7 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
-          <!-- <li class="nav-item"><a class="nav-link" href="{% url 'donorhome' %}">Home</a></li> -->
+          <li class="nav-item"><a class="nav-link" href="{% url 'donorhome' %}">Home</a></li>
           <li class="nav-item"><a class="nav-link active" href="{% url 'donateform' %}">Donate</a></li>
           <!-- <li class="nav-item"><a class="nav-link" href="{% url 'requestform' %}">Request</a></li> -->
           <!-- <li class="nav-item">
@@ -102,7 +102,7 @@
   </nav>
   <section class="form-section">
     <div class="container">
-      <a href="{% url 'login' %}" class="btn btn-light btn-sm">Donate History</a>
+      <a href="{% url 'donor_history' %}" class="btn btn-light btn-sm">Donate History</a>
       <h4 class="lead mt-2 text-secondary">Are you ready to make a difference?</h4>
       <h1>Blood Donor Form</h1>
       <p>Your donation can save lives. Please provide accurate details to help us connect you with those in need.</p>

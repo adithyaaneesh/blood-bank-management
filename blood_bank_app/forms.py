@@ -84,6 +84,15 @@ class DonateForm(forms.ModelForm):
         return date
 
 
+class DonorFormForm(forms.ModelForm):
+    class Meta:
+        model = DonorForm
+        fields = [
+            'firstname', 'email', 'phone', 'age', 'blood_group',
+            'units', 'gender', 'last_donate_date', 'last_receive_date', 'consent'
+        ]
+
+
 class HospitalRegistrationForm(forms.ModelForm):
     hospitalname = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     phonenumber = forms.CharField(max_length=15, widget=forms.TextInput(attrs={'class': 'form-control'}))

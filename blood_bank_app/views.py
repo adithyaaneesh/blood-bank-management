@@ -158,10 +158,7 @@ def donate_form(request):
         gender = request.POST.get('gender')
         last_donate = request.POST.get('donatedate') or None
         last_receive = request.POST.get('recieveddate') or None
-        if last_donate == "":
-            last_donate = None
-        if last_receive == "":
-            last_receive = None
+
         donor = DonorForm(
             firstname=fname,
             email=email,
@@ -172,11 +169,11 @@ def donate_form(request):
             gender=gender,
             last_donate_date=last_donate,
             last_receive_date=last_receive,
+            status='Pending',
         )
         donor.save()
         return redirect('donorhome')
     return render(request, 'donor/donate_form.html')
-
 
 def request_form(request):
     if request.method == 'POST':
@@ -228,8 +225,21 @@ def hospital_stock(request):
     return render(request, 'hospital/hospital_stocks.html', context)
 
 def admin_donors(request):
-    donors = Credential.objects.filter(role='Donor').select_related('user')
+    donors = DonorForm.objects.all().order_by('-id')
     return render(request, 'admin/admin_donors.html', {'donors': donors})
+
+def update_donor_status(request, donor_id, status):
+    donor = get_object_or_404(DonorForm, id=donor_id)
+    donor.status = status
+    donor.approved_by = request.user
+    donor.save()
+    if status == 'Approved':
+        stock, created = BloodStock.objects.get_or_create(blood_group=donor.blood_group)
+        stock.units += donor.units
+        stock.save()
+
+    return redirect('admin_donor_dashboard')
+
 
 def admin_patients(request):
     patients = Credential.objects.filter(role='Patient').select_related('user')
@@ -247,3 +257,7 @@ def admin_blood_request(request):
         'donors': donors
     }
     return render(request, 'admin/admin_blood_request.html', context)
+
+def donor_history(request):
+    donor_records = DonorForm.objects.filter(email=request.user.email, status='Approved').order_by('-id')
+    return render(request, 'donor/donor_history.html', {'donor_records': donor_records})
