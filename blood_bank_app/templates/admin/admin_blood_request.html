@@ -117,19 +117,21 @@
                     <a class="nav-link" href="{% url 'admin_hospitals' %}">
                         <i class="fa-solid fa-hospital"></i> Hospitals
                     </a>
-                    <a class="nav-link" href="{% url 'admin_donors' %}">
+                    <a class="nav-link" href="{% url 'admin_donors_list' %}">
                         <i class="fa-solid fa-hand-holding-droplet"></i> Donors
                     </a>
+                    <!-- <a class="nav-link" href="{% url 'admin_donors' %}">
+                        <i class="fa-solid fa-envelope-open-text"></i> Donor Requests
+                    </a> -->
                     <a class="nav-link" href="{% url 'blood_stock_list' %}">
                         <i class="fa-solid fa-droplet"></i> Blood Stock
                     </a>
                     <a class="nav-link active" href="{% url 'admin_blood_request' %}">
-                        <i class="fa-solid fa-droplet"></i> Blood Request
+                        <i class="fa-solid fa-envelope-open-text"></i> Blood Request
                     </a>
                 </nav>
             </div>
 
-            <!-- Main Content -->
             <div class="col-md-10 p-4">
                 <div class="card-dashboard">
                     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -137,32 +139,51 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover align-middle">
-                            <thead>
+                       <table class="table table-striped">
+                            <thead class="table-danger">
                                 <tr>
-                                    <th>Username</th>
-                                    <th>Email</th>
-                                    <th>Date Joined</th>
-                                    <th>Role</th>
-                                    <th>Action</th>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Role</th>
+                                <th>Blood Group</th>
+                                <th>Units</th>
+                                <th>Status</th>
+                                <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for donor in donors %}
+                                {% for req in requests %}
                                 <tr>
-                                    <td>{{ donor.user.username }}</td>
-                                    <td>{{ donor.user.email }}</td>
-                                    <td>{{ donor.user.date_joined|date:"Y-m-d" }}</td>
-                                    <td><span class="badge bg-success">{{ donor.role }}</span></td>
-                                    <td>
-                                        <a href="#" class="btn btn-success btn-sm">Approve</a>
-                                        <a href="#" class="btn btn-danger btn-sm" >Reject</a>
-                                    </td>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ req.fname }}</td>
+                                <td>{{ req.email }}</td>
+                                <td>{{ req.phonenum }}</td>
+                                <td>{{ req.role }}</td>
+                                <td>{{ req.blood_group }}</td>
+                                <td>{{ req.units }}</td>
+                                <td>
+                                    {% if req.status == 'Accepted' %}
+                                    <span class="badge bg-success">Accepted</span>
+                                    {% elif req.status == 'Rejected' %}
+                                    <span class="badge bg-danger">Rejected</span>
+                                    {% else %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if req.status == 'Pending' %}
+                                        <a href="{% url 'approve_request' req.id %}" class="btn btn-success btn-sm">Accept</a>
+                                        <a href="{% url 'reject_request' req.id %}" class="btn btn-danger btn-sm">Reject</a>
+                                    {% else %}
+                                        <span class="text-muted">No action needed</span>
+                                    {% endif %}
+                                </td>
+
                                 </tr>
                                 {% empty %}
-                                <tr>
-                                    <td colspan="4" class="text-center text-muted">No requests found.</td>
-                                </tr>
+                                <tr><td colspan="9" class="text-center text-muted">No requests found</td></tr>
                                 {% endfor %}
                             </tbody>
                         </table>

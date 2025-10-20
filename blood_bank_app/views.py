@@ -1,9 +1,10 @@
 from pyexpat.errors import messages
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Sum, Count, Q
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegistrationForm,HospitalRegistrationForm
-from .models import BloodStock, DonorForm, RequestForm, HospitalRequestForm, Credential
+from .models import BloodRequest, BloodStock, DonorForm, RequestForm, HospitalRequestForm, Credential
 from django.contrib.auth import get_user_model
 from django.db.models import Sum
 
@@ -79,28 +80,32 @@ def user_logout(request):
 def index(request):
     return render(request,'index.html')
 
+
 def dashboard(request):
     total_units = BloodStock.objects.aggregate(total=Sum('units'))['total'] or 0
+    total_donors = DonorForm.objects.filter(status='Approved').count()
+    total_requests = BloodRequest.objects.count()
+    approved_requests = BloodRequest.objects.filter(status='Accepted').count()
     blood_data = {group: 0 for group, _ in BloodStock.BLOOD_GROUPS}
     for stock in BloodStock.objects.all():
         blood_data[stock.blood_group] = stock.units
-
     context = {
-        'available_donors': 24,
+        'available_donors': total_donors,
         'total_blood_units': total_units,
-        'total_requests': 42, 
-        'approved_requests': 38, 
-        'a_positive': blood_data['A+'],
-        'a_negative': blood_data['A-'],
-        'b_positive': blood_data['B+'],
-        'b_negative': blood_data['B-'],
-        'ab_positive': blood_data['AB+'],
-        'ab_negative': blood_data['AB-'],
-        'o_positive': blood_data['O+'],
-        'o_negative': blood_data['O-'],
-        'blood_stock': total_units, 
+        'total_requests': total_requests,
+        'approved_requests': approved_requests,
+        'a_positive': blood_data.get('A+', 0),
+        'a_negative': blood_data.get('A-', 0),
+        'b_positive': blood_data.get('B+', 0),
+        'b_negative': blood_data.get('B-', 0),
+        'ab_positive': blood_data.get('AB+', 0),
+        'ab_negative': blood_data.get('AB-', 0),
+        'o_positive': blood_data.get('O+', 0),
+        'o_negative': blood_data.get('O-', 0),
+        'blood_stock': total_units,
     }
     return render(request, 'admin/admin_dashboard.html', context)
+
 
 
 def stock_details(request):
@@ -147,6 +152,7 @@ def donor_home(request):
     stocks = BloodStock.objects.all().order_by('blood_group')
     return render(request, 'donor/donor_home.html',{'stocks':stocks})
 
+
 def donate_form(request):
     if request.method == "POST":
         fname = request.POST.get('fname')
@@ -158,8 +164,7 @@ def donate_form(request):
         gender = request.POST.get('gender')
         last_donate = request.POST.get('donatedate') or None
         last_receive = request.POST.get('recieveddate') or None
-
-        donor = DonorForm(
+        donor = DonorForm.objects.create(
             firstname=fname,
             email=email,
             phone=phone,
@@ -169,26 +174,94 @@ def donate_form(request):
             gender=gender,
             last_donate_date=last_donate,
             last_receive_date=last_receive,
-            status='Pending',
+            status='Pending'
         )
-        donor.save()
+        BloodRequest.objects.create(
+            user=request.user if request.user.is_authenticated else None,
+            fname=fname,
+            email=email,
+            phonenum=phone,
+            age=age,
+            reason='Blood Donation',
+            blood_group=blood_group,
+            units=units,
+            gender=gender,
+            role='Donor',
+            status='Pending'
+        )
         return redirect('donorhome')
     return render(request, 'donor/donate_form.html')
 
+
+
 def request_form(request):
     if request.method == 'POST':
-        RequestForm.objects.create(
-            firstname = request.POST.get('fname'),
-            email = request.POST.get('email'),
-            phone = request.POST.get('phonenum'),
-            age = request.POST.get('age'),
-            reason = request.POST.get('reason'),
-            blood_group = request.POST.get('blood_group'),
-            units = request.POST.get('units'),
-            gender = request.POST.get('gender'),
+        fname = request.POST.get('fname')
+        email = request.POST.get('email')
+        phonenum = request.POST.get('phonenum')
+        age = request.POST.get('age')
+        reason = request.POST.get('reason')
+        blood_group = request.POST.get('blood_group')
+        units = request.POST.get('units')
+        gender = request.POST.get('gender')
+        BloodRequest.objects.create(
+            user=request.user if request.user.is_authenticated else None,
+            fname=fname,
+            email=email,
+            phonenum=phonenum,
+            age=age,
+            reason=reason,
+            blood_group=blood_group,
+            units=units,
+            gender=gender,
+            role='Patient',
+            status='Pending'
         )
         return redirect('patienthome')
-    return render(request, 'patient/request_form.html')
+    return render(request, 'patient/requestform.html')
+
+
+def admin_blood_request(request):
+    requests_list = BloodRequest.objects.all().order_by('-created_at')
+    return render(request, 'admin/admin_blood_request.html', {'requests': requests_list})
+
+def approve_request(request, pk):
+    req = get_object_or_404(BloodRequest, pk=pk)
+    blood_group = req.blood_group
+    units = int(req.units)
+    stock, created = BloodStock.objects.get_or_create(blood_group=blood_group)
+    if req.role == 'Donor':
+        stock.units += units
+        stock.save()
+        req.status = 'Accepted'
+        donor = DonorForm.objects.filter(email=req.email, units=req.units, blood_group=req.blood_group).first()
+        if donor:
+            donor.status = 'Approved'
+            donor.save()
+    elif req.role in ['Patient', 'Hospital']:
+        if stock.units >= units:
+            stock.units -= units
+            stock.save()
+            req.status = 'Accepted'
+        else:
+            req.status = 'Rejected'
+
+    req.save()
+    return redirect('admin_blood_request')
+
+def reject_request(request, pk):
+    req = get_object_or_404(BloodRequest, pk=pk)
+    req.status = 'Rejected'
+    req.save()
+    if req.role == 'Donor':
+        donor = DonorForm.objects.filter(email=req.email, units=req.units, blood_group=req.blood_group).first()
+        if donor:
+            donor.status = 'Rejected'
+            donor.save()
+
+    return redirect('admin_blood_request')
+
+
 
 def hospital_home(request):
     stocks = BloodStock.objects.all().order_by('blood_group')
@@ -239,7 +312,15 @@ def update_donor_status(request, donor_id, status):
         stock.save()
 
     return redirect('admin_donor_dashboard')
+def admin_donor_list(request):
+    donor_data = DonorForm.objects.all().order_by('-id')  # donation form data
+    donors = Credential.objects.filter(role='Donor').select_related('user')  # registered donors
 
+    context = {
+        'donordata': donor_data,
+        'donors': donors,
+    }
+    return render(request, 'admin/admin_donors_list.html', context)
 
 def admin_patients(request):
     patients = Credential.objects.filter(role='Patient').select_related('user')
@@ -249,14 +330,14 @@ def admin_hospitals(request):
     hospitals = Credential.objects.filter(role='Hospital').select_related('user')
     return render(request, 'admin/admin_hospitals.html', {'hospitals': hospitals})
 
-def admin_blood_request(request):
-    hospitals = Credential.objects.filter(role='Hospital').select_related('user')
-    donors = Credential.objects.filter(role='Donor').select_related('user')
-    context = {
-        'hospitals': hospitals,
-        'donors': donors
-    }
-    return render(request, 'admin/admin_blood_request.html', context)
+# def admin_blood_request(request):
+#     hospitals = Credential.objects.filter(role='Hospital').select_related('user')
+#     donors = Credential.objects.filter(role='Donor').select_related('user')
+#     context = {
+#         'hospitals': hospitals,
+#         'donors': donors
+#     }
+#     return render(request, 'admin/admin_blood_request.html', context)
 
 def donor_history(request):
     donor_records = DonorForm.objects.filter(email=request.user.email, status='Approved').order_by('-id')

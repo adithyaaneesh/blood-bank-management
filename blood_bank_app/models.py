@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from django.db import models
 from django.contrib.auth import get_user_model
 
@@ -110,6 +111,32 @@ class RequestForm(models.Model):
 
     def __str__(self):
         return self.firstname
+
+
+
+class BloodRequest(models.Model):
+    ROLE_CHOICES = [
+        ('Patient', 'Patient'),
+        ('Hospital', 'Hospital'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    fname = models.CharField(max_length=100)
+    email = models.EmailField()
+    phonenum = models.CharField(max_length=15)
+    age = models.PositiveIntegerField()
+    reason = models.TextField()
+    blood_group = models.CharField(max_length=5)
+    units = models.PositiveIntegerField()
+    gender = models.CharField(max_length=10)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='Patient')
+    status = models.CharField(max_length=20, default='Pending')
+    created_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.fname} ({self.blood_group}) - {self.status}"
+
+
 
 class HospitalRequestForm(models.Model):
     hospitalname = models.CharField(max_length=20)

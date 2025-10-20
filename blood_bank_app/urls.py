@@ -24,11 +24,15 @@ urlpatterns = [
     path('hospitalstock/', views.hospital_stock, name='hospitalstock'),
     path('donors/', views.admin_donors, name='admin_donors'),
     path('patients/', views.admin_patients, name='admin_patients'),
+    path('admin_donor_list/', views.admin_donor_list, name='admin_donors_list'),
     path('hospitals/', views.admin_hospitals, name='admin_hospitals'),
     path('admin_blood_request/', views.admin_blood_request, name='admin_blood_request'),
+    path('bloodrequests/approve/<int:pk>/', views.approve_request, name='approve_request'),
+    path('bloodrequests/reject/<int:pk>/', views.reject_request, name='reject_request'),
     path('donors/dashboard/', views.admin_donors, name='admin_donor_dashboard'),
     path('donor/<int:donor_id>/<str:status>/', views.update_donor_status, name='update_donor_status'),
     path('history/', views.donor_history, name='donor_history'),
+
 
 
 ]
