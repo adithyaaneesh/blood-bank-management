@@ -14,7 +14,7 @@
         <table class="table table-bordered">
             <thead class="table-danger">
                 <tr>
-                    <th>UserName</th>
+                    <th>Name</th>
                     <th>Date</th>
                     <th>Blood Group</th>
                     <th>Units</th>
@@ -25,7 +25,7 @@
             <tbody>
                 {% for donor in donor_records %}
                 <tr>
-                    <td>{{ donor.firstname }}</td> 
+                    <td>{{ donor.firstname }}</td>
                     <td>{{ donor.created_at|date:"d M Y" }}</td>
                     <td>{{ donor.blood_group }}</td>
                     <td>{{ donor.units }}</td>
@@ -39,7 +39,6 @@
                             <span class="badge bg-warning text-dark">Pending</span>
                         {% endif %}
                     </td>
-
                 </tr>
                 {% empty %}
                 <tr>

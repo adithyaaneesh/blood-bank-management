@@ -1,18 +1,9 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
-from .models import Credential, Donor, DonorForm
+from .models import Credential, DonorForm
 
 User = get_user_model()
 
-
-from django import forms
-from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import UserCreationForm
-
-from .models import Credential
-
-User = get_user_model()
 
 class UserRegistrationForm(forms.ModelForm):
     role = forms.ChoiceField(
@@ -47,7 +38,6 @@ class UserRegistrationForm(forms.ModelForm):
         cleaned_data = super().clean()
         password1 = cleaned_data.get("password1")
         password2 = cleaned_data.get("password2")
-
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError("Passwords do not match.")
         return cleaned_data
@@ -57,40 +47,8 @@ class UserRegistrationForm(forms.ModelForm):
         user.set_password(self.cleaned_data['password1'])
         if commit:
             user.save()
-            # Credential.objects.create(user=user, role=self.cleaned_data['role'])
         return user
 
-class DonateForm(forms.ModelForm):
-    donation_date = forms.DateField(
-        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control mb-3'}),
-        required=False,
-        label="Donation Date"
-    )
-
-    class Meta:
-        model = Donor
-        fields = ['name', 'email', 'blood_group', 'units', 'donation_date']
-        widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control mb-3'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control mb-3'}),
-            'blood_group': forms.Select(attrs={'class': 'form-control mb-3'}),
-            'units': forms.NumberInput(attrs={'class': 'form-control mb-3'}),
-        }
-
-    def clean_donation_date(self):
-        date = self.cleaned_data.get('donation_date')
-        if not date:
-            raise forms.ValidationError("Please enter a valid date in YYYY-MM-DD format.")
-        return date
-
-
-class DonorFormForm(forms.ModelForm):
-    class Meta:
-        model = DonorForm
-        fields = [
-            'firstname', 'email', 'phone', 'age', 'blood_group',
-            'units', 'gender', 'last_donate_date', 'last_receive_date', 'consent'
-        ]
 
 
 class HospitalRegistrationForm(forms.ModelForm):
@@ -122,3 +80,38 @@ class HospitalRegistrationForm(forms.ModelForm):
         if commit:
             hospital.save()
         return hospital
+
+
+
+# class DonateForm(forms.ModelForm):
+#     donation_date = forms.DateField(
+#         widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control mb-3'}),
+#         required=True,
+#         label="Donation Date"
+#     )
+
+#     class Meta:
+#         model = Donor
+#         fields = ['name', 'email', 'blood_group', 'units', 'donation_date']
+#         widgets = {
+#             'name': forms.TextInput(attrs={'class': 'form-control mb-3'}),
+#             'email': forms.EmailInput(attrs={'class': 'form-control mb-3'}),
+#             'blood_group': forms.Select(attrs={'class': 'form-control mb-3'}),
+#             'units': forms.NumberInput(attrs={'class': 'form-control mb-3'}),
+#         }
+
+#     def clean_donation_date(self):
+#         date = self.cleaned_data.get('donation_date')
+#         if not date:
+#             raise forms.ValidationError("Please enter a valid date in YYYY-MM-DD format.")
+#         return date
+
+
+class DonorFormForm(forms.ModelForm):
+    class Meta:
+        model = DonorForm
+        fields = [
+            'firstname', 'email', 'phone', 'age', 'blood_group',
+            'units', 'gender', 'last_donate_date', 'last_receive_date', 'consent'
+        ]
+
