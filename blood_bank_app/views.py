@@ -148,9 +148,27 @@ def delete_blood_stock(request, stock_id):
 def patient_home(request):
     stocks = BloodStock.objects.all().order_by('blood_group')
     return render(request, 'patient/patient_home.html',{'stocks':stocks})
+
+from django.db.models import Count
+
 def donor_home(request):
+    user_name = request.user.first_name  
+    donor_records = DonorForm.objects.filter(firstname=user_name)
+    total_requests = donor_records.count()
+    pending_requests = donor_records.filter(status='Pending').count()
+    approved_requests = donor_records.filter(status='Approved').count()
+    rejected_requests = donor_records.filter(status='Rejected').count()
     stocks = BloodStock.objects.all().order_by('blood_group')
-    return render(request, 'donor/donor_home.html',{'stocks':stocks})
+    context = {
+        'total_requests': total_requests,
+        'pending_requests': pending_requests,
+        'approved_requests': approved_requests,
+        'rejected_requests': rejected_requests,
+        'stocks': stocks,
+    }
+
+    return render(request, 'donor/donor_home.html', context)
+
 
 
 def donate_form(request):
@@ -330,15 +348,11 @@ def admin_hospitals(request):
     hospitals = Credential.objects.filter(role='Hospital').select_related('user')
     return render(request, 'admin/admin_hospitals.html', {'hospitals': hospitals})
 
-# def admin_blood_request(request):
-#     hospitals = Credential.objects.filter(role='Hospital').select_related('user')
-#     donors = Credential.objects.filter(role='Donor').select_related('user')
-#     context = {
-#         'hospitals': hospitals,
-#         'donors': donors
-#     }
-#     return render(request, 'admin/admin_blood_request.html', context)
 
 def donor_history(request):
-    donor_records = DonorForm.objects.filter(email=request.user.email, status='Approved').order_by('-id')
+    donor_records = DonorForm.objects.filter(
+        email=request.user.email,
+    ).order_by('-created_at')
+
     return render(request, 'donor/donor_history.html', {'donor_records': donor_records})
+

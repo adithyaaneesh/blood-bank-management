@@ -8,29 +8,42 @@
 </head>
 <body>
 <div class="container mt-5">
-    <h2 class="mb-4">Your Approved Donations</h2>
+    <h2 class="mb-4">Your Donation History</h2>
     <a href="{% url 'donateform' %}" class="btn btn-primary mb-3">Back to Donate Form</a>
     <div class="table-responsive">
         <table class="table table-bordered">
             <thead class="table-danger">
                 <tr>
+                    <th>UserName</th>
                     <th>Date</th>
                     <th>Blood Group</th>
                     <th>Units</th>
                     <th>Last Donate Date</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
                 {% for donor in donor_records %}
                 <tr>
+                    <td>{{ donor.firstname }}</td> 
                     <td>{{ donor.created_at|date:"d M Y" }}</td>
                     <td>{{ donor.blood_group }}</td>
                     <td>{{ donor.units }}</td>
-                    <td>{{ donor.last_donate_date }}</td>
+                    <td>{{ donor.last_donate_date|default:"N/A" }}</td>
+                    <td>
+                        {% if donor.status == 'Approved' %}
+                            <span class="badge bg-success">Approved</span>
+                        {% elif donor.status == 'Rejected' %}
+                            <span class="badge bg-danger">Rejected</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        {% endif %}
+                    </td>
+
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="4" class="text-center">No approved donations yet.</td>
+                    <td colspan="6" class="text-center">No donations yet.</td>
                 </tr>
                 {% endfor %}
             </tbody>
