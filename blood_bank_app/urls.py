@@ -32,6 +32,10 @@ urlpatterns = [
     path('donors/dashboard/', views.admin_donors, name='admin_donor_dashboard'),
     path('donor/<int:donor_id>/<str:status>/', views.update_donor_status, name='update_donor_status'),
     path('history/', views.donor_history, name='donor_history'),
+    path('request-history/', views.patient_request_history, name='request_history'),
+    path('blood-request/', views.admin_blood_request, name='admin_blood_request'),
+    path('approve-request/<int:pk>/', views.approve_request, name='approve_request'),
+    path('reject-request/<int:pk>/', views.reject_request, name='reject_request'),
 
 
 

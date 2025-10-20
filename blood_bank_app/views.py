@@ -236,7 +236,7 @@ def request_form(request):
             status='Pending'
         )
         return redirect('patienthome')
-    return render(request, 'patient/requestform.html')
+    return render(request, 'patient/request_form.html')
 
 
 def admin_blood_request(request):
@@ -356,3 +356,8 @@ def donor_history(request):
 
     return render(request, 'donor/donor_history.html', {'donor_records': donor_records})
 
+
+
+def patient_request_history(request):
+    requests = BloodRequest.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'patient/request_history.html', {'requests': requests})
