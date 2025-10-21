@@ -31,7 +31,7 @@
                     <td>{{ donor.units }}</td>
                     <td>{{ donor.last_donate_date|default:"N/A" }}</td>
                     <td>
-                        {% if donor.status == 'Approved' %}
+                       {% if donor.status == 'Approved' %}
                             <span class="badge bg-success">Approved</span>
                         {% elif donor.status == 'Rejected' %}
                             <span class="badge bg-danger">Rejected</span>

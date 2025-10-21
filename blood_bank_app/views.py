@@ -155,8 +155,24 @@ def stock_details(request):
     stocks = BloodStock.objects.all().order_by('blood_group')
     return render(request, 'patient/stock_details.html', {'stocks': stocks})
 
+#Donor views
+def donate_form(request):
+    if request.method == "POST":
+        DonorForm.objects.create(
+            firstname=request.POST.get('fname'),
+            email=request.POST.get('email'),
+            phone=request.POST.get('phonenum'),
+            age=request.POST.get('age'),
+            blood_group=request.POST.get('blood_group'),
+            units=request.POST.get('units'),
+            gender=request.POST.get('gender'),
+            last_donate_date=request.POST.get('donatedate') or None,
+            last_receive_date=request.POST.get('recieveddate') or None,
+            status='Pending'
+        )
+        return redirect('donor_history')  # show their record immediately
+    return render(request, 'donor/donate_form.html')
 
-# Donor Views
 
 def donor_home(request):
     user_name = request.user.first_name
@@ -170,40 +186,30 @@ def donor_home(request):
     }
     return render(request, 'donor/donor_home.html', context)
 
-def donate_form(request):
-    if request.method == "POST":
-        donor = DonorForm.objects.create(
-            firstname=request.POST.get('fname'),
-            email=request.POST.get('email'),
-            phone=request.POST.get('phonenum'),
-            age=request.POST.get('age'),
-            blood_group=request.POST.get('blood_group'),
-            units=request.POST.get('units'),
-            gender=request.POST.get('gender'),
-            last_donate_date=request.POST.get('donatedate') or None,
-            last_receive_date=request.POST.get('recieveddate') or None,
-            status='Pending'
-        )
-        BloodRequest.objects.create(
-            user=request.user,
-            fname=donor.firstname,
-            email=donor.email,
-            phonenum=donor.phone,
-            age=donor.age,
-            reason='Blood Donation',
-            blood_group=donor.blood_group,
-            units=donor.units,
-            gender=donor.gender,
-            role='Donor',
-            status='Pending'
-        )
-        return redirect('donorhome')
-    return render(request, 'donor/donate_form.html')
+def admin_donors(request):
+    donors = DonorForm.objects.all().order_by('-id')
+    return render(request, 'admin/admin_donors.html', {'donors': donors})
+
+
+def update_donor_status(request, donor_id, status):
+    donor = get_object_or_404(DonorForm, id=donor_id)
+    donor.status = status
+    donor.approved_by = request.user
+    donor.save()
+
+    if status == 'Approved':
+        stock, _ = BloodStock.objects.get_or_create(blood_group=donor.blood_group)
+        stock.units += donor.units
+        stock.save()
+
+    return redirect('admin_donors')
 
 
 def donor_history(request):
     donor_records = DonorForm.objects.filter(email=request.user.email).order_by('-created_at')
     return render(request, 'donor/donor_history.html', {'donor_records': donor_records})
+
+
 
 
 # Patient Views
