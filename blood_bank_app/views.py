@@ -81,7 +81,7 @@ def index(request):
 
 def dashboard(request):
     total_units = BloodStock.objects.aggregate(total=Sum('units'))['total'] or 0
-    total_donors = DonorForm.objects.filter(status='Approved').count()
+    total_donors = DonorForm.objects.count()
     total_requests = BloodRequest.objects.count()
     approved_requests = BloodRequest.objects.filter(status='Accepted').count()
 
@@ -156,11 +156,17 @@ def stock_details(request):
     return render(request, 'patient/stock_details.html', {'stocks': stocks})
 
 #Donor views
+
 def donate_form(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
     if request.method == "POST":
         DonorForm.objects.create(
+            user=request.user,
             firstname=request.POST.get('fname'),
-            email=request.POST.get('email'),
+            # email=request.user.get('email'),
+            email=request.user.email,
             phone=request.POST.get('phonenum'),
             age=request.POST.get('age'),
             blood_group=request.POST.get('blood_group'),
@@ -168,15 +174,17 @@ def donate_form(request):
             gender=request.POST.get('gender'),
             last_donate_date=request.POST.get('donatedate') or None,
             last_receive_date=request.POST.get('recieveddate') or None,
+            consent=request.POST.get('consent') == 'on',
             status='Pending'
         )
-        return redirect('donor_history')  # show their record immediately
+        return redirect('donor_history')
+
     return render(request, 'donor/donate_form.html')
 
 
+
 def donor_home(request):
-    user_name = request.user.first_name
-    donor_records = DonorForm.objects.filter(firstname=user_name)
+    donor_records = DonorForm.objects.filter(user=request.user)
     context = {
         'total_requests': donor_records.count(),
         'pending_requests': donor_records.filter(status='Pending').count(),
@@ -186,10 +194,16 @@ def donor_home(request):
     }
     return render(request, 'donor/donor_home.html', context)
 
+
 def admin_donors(request):
     donors = DonorForm.objects.all().order_by('-id')
     return render(request, 'admin/admin_donors.html', {'donors': donors})
 
+
+def delete_all_donor_requests(request):
+    if request.user.is_superuser:  
+        DonorForm.objects.all().delete()
+    return redirect('admin_donors')  
 
 def update_donor_status(request, donor_id, status):
     donor = get_object_or_404(DonorForm, id=donor_id)
@@ -205,10 +219,19 @@ def update_donor_status(request, donor_id, status):
     return redirect('admin_donors')
 
 
+
 def donor_history(request):
-    donor_records = DonorForm.objects.filter(email=request.user.email).order_by('-created_at')
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    donor_records = DonorForm.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'donor/donor_history.html', {'donor_records': donor_records})
 
+
+def delete_my_donor_requests(request):
+    if request.user.is_authenticated:
+        DonorForm.objects.filter(email=request.user.email).delete()
+    return redirect('donor_history')
 
 
 
@@ -254,7 +277,7 @@ def patient_request_history(request):
 # Admin Blood Request Actions
 
 def admin_blood_request(request):
-    requests_list = BloodRequest.objects.all().order_by('-created_at')
+    requests_list = BloodRequest.objects.filter(role__in=['Patient', 'Hospital']).order_by('-created_at')
     return render(request, 'admin/admin_blood_request.html', {'requests': requests_list})
 
 

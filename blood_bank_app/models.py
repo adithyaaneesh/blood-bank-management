@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
+from django.conf import settings
+
 User = get_user_model()
 
 BLOOD_GROUP_CHOICES = [
@@ -48,13 +50,32 @@ class BloodStock(models.Model):
 
 
 class DonorForm(models.Model):
-    GENDER_CHOICES = [('Male', 'Male'), ('Female', 'Female')]
+    user = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        null=True, 
+        blank=True,
+        related_name='donor_requests' 
+    )
+    approved_by = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True,
+        related_name='approved_donor_requests'
+    )
     firstname = models.CharField(max_length=50)
     email = models.EmailField()
     phone = models.CharField(max_length=15)
     age = models.PositiveIntegerField(default=18)
     blood_group = models.CharField(max_length=5, choices=BLOOD_GROUP_CHOICES)
     units = models.PositiveIntegerField()
+    GENDER_CHOICES = [
+        ('Male','Male'),
+        ('Female','Female'),
+
+    ]
+    GENDER_CHOICES = [('Male','Male'), ('Female','Female')]
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     last_donate_date = models.DateTimeField(null=True, blank=True)
     last_receive_date = models.DateTimeField(null=True, blank=True)
@@ -63,10 +84,8 @@ class DonorForm(models.Model):
 
     STATUS_CHOICES = [('Pending', 'Pending'), ('Approved', 'Approved'), ('Rejected', 'Rejected')]
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
-    approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
-    def __str__(self):
-        return f"{self.firstname} - {self.status}"
+
 
 
 class BloodRequest(models.Model):

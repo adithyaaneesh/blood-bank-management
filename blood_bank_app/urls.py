@@ -37,6 +37,8 @@ urlpatterns = [
     path('approve-request/<int:pk>/', views.approve_request, name='approve_request'),
     path('reject-request/<int:pk>/', views.reject_request, name='reject_request'),
 
+    path('deletedonorreq/', views.delete_my_donor_requests, name='delete_my_donor_requests'),
+    path('deleallreq/', views.delete_all_donor_requests, name='delete_all_donor_requests'),
 
 
 ]
