@@ -57,6 +57,7 @@
                    <th>Reason</th>
                    <th>Status</th>
                    <th>Requested On</th>
+                   <th>Admin Message</th>
                </tr>
            </thead>
            <tbody>
@@ -77,6 +78,13 @@
                        {% endif %}
                    </td>
                    <td>{{ req.created_at|date:"Y-m-d H:i" }}</td>
+                   <td>
+                    {% if request.admin_message %}
+                        <span class="text-warning">{{ request.admin_message }}</span>
+                    {% else %}
+                        <span class="text-muted">-</span>
+                    {% endif %}
+                    </td>
                </tr>
                {% empty %}
                <tr>

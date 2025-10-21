@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
+from django.contrib import messages
 from .forms import UserRegistrationForm
 from .models import (
     BloodRequest, BloodStock, DonorForm, Credential
@@ -270,11 +271,11 @@ def admin_blood_request(request):
     return render(request, 'admin/admin_blood_request.html', {'requests': requests_list})
 
 
+
 def approve_request(request, pk):
     req = get_object_or_404(BloodRequest, pk=pk)
     stock, _ = BloodStock.objects.get_or_create(blood_group=req.blood_group)
     units = int(req.units)
-
     if req.role == 'Donor':
         stock.units += units
         req.status = 'Accepted'
@@ -282,12 +283,22 @@ def approve_request(request, pk):
         if donor:
             donor.status = 'Approved'
             donor.save()
+        messages.success(request, f"Donor request approved and {units} units added to stock.")
     else:
         if stock.units >= units:
             stock.units -= units
             req.status = 'Accepted'
+            req.admin_message = f"{units} units of {req.blood_group} provided successfully."
+            messages.success(request, f"Blood request approved. {units} units of {req.blood_group} provided.")
         else:
-            req.status = 'Rejected'
+            req.status = 'Pending'
+            req.admin_message = (
+                f"⚠️ Not enough {req.blood_group} stock available. "
+                f"Requested: {units}, Available: {stock.units}. Please try again later."
+            )
+            messages.warning(request, f"⚠️ Not enough {req.blood_group} stock available. Request kept pending.")
+            req.save()
+            return redirect('admin_blood_request')
 
     stock.save()
     req.save()
