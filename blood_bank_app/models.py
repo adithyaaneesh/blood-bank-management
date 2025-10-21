@@ -107,3 +107,11 @@ class BloodRequest(models.Model):
     def __str__(self):
         return f"{self.fname} ({self.blood_group}) - {self.status}"
 
+class HospitalDetails(models.Model):
+    name = models.CharField(max_length=255)
+    address = models.TextField()
+    email = models.EmailField(unique=True)
+    phone_number = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name

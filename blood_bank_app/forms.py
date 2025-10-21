@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from .models import Credential, DonorForm
+from .models import Credential, DonorForm, HospitalDetails
 
 User = get_user_model()
 
@@ -58,3 +58,15 @@ class DonorFormForm(forms.ModelForm):
             'units', 'gender', 'last_donate_date', 'last_receive_date', 'consent'
         ]
 
+
+
+class HospitalForm(forms.ModelForm):
+    class Meta:
+        model = HospitalDetails
+        fields = ['name', 'address', 'email', 'phone_number']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Hospital Name'}),
+            'address': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Address', 'rows': 3}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'}),
+            'phone_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Phone Number'}),
+        }

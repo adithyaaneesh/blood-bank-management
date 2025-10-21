@@ -4,9 +4,9 @@ from django.db.models import Sum
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
 from django.contrib import messages
-from .forms import UserRegistrationForm
+from .forms import UserRegistrationForm, HospitalForm
 from .models import (
-    BloodRequest, BloodStock, DonorForm, Credential
+    BloodRequest, BloodStock, DonorForm, Credential, HospitalDetails
 )
 
 User = get_user_model()
@@ -38,10 +38,15 @@ def user_login(request):
             role = getattr(user.credential, 'role', None)
             if role == selected_role:
                 login(request, user)
+                if role == 'Hospital':
+                    hospital_profile_exists = HospitalDetails.objects.exists()
+                    if not hospital_profile_exists:
+                        return redirect('hospital_profile')
+                    else:
+                        return redirect('hospitalhome')
                 redirect_map = {
-                    'Hospital': 'hospitalhome',
-                    'Patient': 'patienthome',
-                    'Donor': 'donateform'
+                    'Patient': 'patient_details',
+                    'Donor': 'donor_details'
                 }
                 return redirect(redirect_map.get(role, 'home'))
             else:
@@ -54,6 +59,7 @@ def user_login(request):
             'admin_user': admin_user
         })
     return render(request, "login.html", {'admin_user': admin_user})
+
 
 
 def user_logout(request):
@@ -403,12 +409,34 @@ def admin_hospitals(request):
     hospitals = Credential.objects.filter(role='Hospital').select_related('user')
     return render(request, 'admin/admin_hospitals.html', {'hospitals': hospitals})
 
-# def admin_profile(request,admin_id):
-#     if not request.user.is_superuser:
-#         return redirect('home')
-#     user = get_object_or_404(User, id=admin_id)
-#     return render(request, 'admin_profile.html', {'user': user})
 def admin_profile(request):
     if not request.user.is_superuser:
         return redirect('home')
     return render(request, 'admin/admin_profile.html', {'user': request.user})
+
+
+
+def hospital_profile_view(request):
+    hospital = HospitalDetails.objects.first()
+    return render(request, 'hospital/hospital_profile_view.html', {'hospital': hospital})
+
+
+
+def hospital_profile(request):
+    hospital = HospitalDetails.objects.first()
+
+    if request.method == 'POST':
+        form = HospitalForm(request.POST, instance=hospital)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Hospital profile saved successfully!")
+            return redirect('hospitalhome') 
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = HospitalForm(instance=hospital)
+
+    return render(request, 'hospital/hospital_details.html', {
+        'form': form,
+        'hospital': hospital
+    })

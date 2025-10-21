@@ -39,10 +39,9 @@ urlpatterns = [
     path('deletealldonors/', views.delete_all_donor_requests, name='delete_all_donor_requests'),
     path('hospitalrequests/', views.hospital_request_history, name='hospital_request_history'),
 
+    path('adminprofile/profile/', views.admin_profile, name='admin_profile'),
 
-    path('adminprofile/profile/', views.admin_profile, name='admin_profile')
-    # path('adminprofile/profile/<int:admin_id>/', views.admin_profile, name='admin_profile')
-
-
+    path('hospital/profile/', views.hospital_profile, name='hospital_profile'),
+    path('hospital/profile/view/', views.hospital_profile_view, name='hospital_profile_view'),
 
 ]
