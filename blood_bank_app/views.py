@@ -1,3 +1,4 @@
+from datetime import date
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum
 from django.contrib.auth import authenticate, login, logout
@@ -110,7 +111,17 @@ def dashboard(request):
 
 def blood_stock_list(request):
     stocks = BloodStock.objects.all()
-    return render(request, 'admin/blood_stock_list.html', {'stocks': stocks})
+    expired_stocks = [s for s in stocks if s.is_expired()]
+    near_expiry_stocks = [s for s in stocks if s.is_near_expiry()]
+
+    context = {
+        'stocks': stocks,
+        'expired_stocks': expired_stocks,
+        'near_expiry_stocks': near_expiry_stocks,
+        'today': date.today(),
+    }
+    return render(request, 'admin/blood_stock_list.html', context)
+
 
 
 def add_blood_stock(request):

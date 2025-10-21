@@ -24,14 +24,27 @@ class Credential(models.Model):
         return f"{self.user.username} - {self.role}"
 
 
+from datetime import timedelta, date
+
 class BloodStock(models.Model):
     BLOOD_GROUPS = BLOOD_GROUP_CHOICES
     blood_group = models.CharField(max_length=3, choices=BLOOD_GROUPS, unique=True)
     units = models.PositiveIntegerField(default=0)
+    collection_date = models.DateField(auto_now_add=True)
+    expiry_date = models.DateField(blank=True, null=True)
     last_updated = models.DateTimeField(auto_now=True)
 
+    def save(self, *args, **kwargs):
+        if not self.expiry_date:
+            self.expiry_date = self.collection_date + timedelta(days=35)
+        super().save(*args, **kwargs)
+    def is_expired(self):
+        return self.expiry_date and self.expiry_date < date.today()
+    def is_near_expiry(self):
+        return self.expiry_date and (self.expiry_date - date.today()).days <= 5
     def __str__(self):
         return f"{self.blood_group} - {self.units} units"
+
 
 
 class DonorForm(models.Model):
