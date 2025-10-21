@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from .models import Credential, DonorForm, HospitalDetails, PatientProfile
+from .models import Credential, DonorForm, HospitalDetails, PatientProfile, DonorProfile
 
 User = get_user_model()
 
@@ -75,6 +75,20 @@ class HospitalForm(forms.ModelForm):
 class PatientProfileForm(forms.ModelForm):
     class Meta:
         model = PatientProfile
+        fields = ['full_name', 'age', 'gender', 'blood_group', 'phone_number', 'address']
+        widgets = {
+            'full_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'age': forms.NumberInput(attrs={'class': 'form-control'}),
+            'gender': forms.Select(attrs={'class': 'form-control'}, choices=[('Male','Male'),('Female','Female'),('Other','Other')]),
+            'blood_group': forms.Select(attrs={'class': 'form-control'}, choices=[('A+','A+'),('A-','A-'),('B+','B+'),('B-','B-'),('AB+','AB+'),('AB-','AB-'),('O+','O+'),('O-','O-')]),
+            'phone_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'address': forms.Textarea(attrs={'class': 'form-control', 'rows':3}),
+        }
+
+
+class DonorProfileForm(forms.ModelForm):
+    class Meta:
+        model = DonorProfile
         fields = ['full_name', 'age', 'gender', 'blood_group', 'phone_number', 'address']
         widgets = {
             'full_name': forms.TextInput(attrs={'class': 'form-control'}),

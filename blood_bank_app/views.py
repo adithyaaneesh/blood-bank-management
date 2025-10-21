@@ -4,9 +4,9 @@ from django.db.models import Sum
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
 from django.contrib import messages
-from .forms import UserRegistrationForm, HospitalForm, PatientProfileForm
+from .forms import UserRegistrationForm, HospitalForm, PatientProfileForm, DonorProfileForm
 from .models import (
-    BloodRequest, BloodStock, DonorForm, Credential, HospitalDetails, PatientProfile
+    BloodRequest, BloodStock, DonorForm, Credential, HospitalDetails, PatientProfile, DonorProfile
 )
 
 User = get_user_model()
@@ -39,22 +39,26 @@ def user_login(request):
             if role == selected_role:
                 login(request, user)
                 if role == 'Hospital':
-                    hospital_profile_exists = HospitalDetails.objects.exists()
+                    hospital_profile_exists = HospitalDetails.objects.filter(user=user).exists()
                     if not hospital_profile_exists:
-                        return redirect('hospital_profile') 
+                        return redirect('hospital_profile')
                     else:
                         return redirect('hospitalhome')
                 elif role == 'Patient':
-                    from .models import PatientProfile 
+                    from .models import PatientProfile
                     patient_profile_exists = PatientProfile.objects.filter(user=user).exists()
                     if not patient_profile_exists:
-                        return redirect('patient_profile') 
+                        return redirect('patient_profile')
                     else:
                         return redirect('patienthome')
-                redirect_map = {
-                    'Donor': 'donor_details',
-                }
-                return redirect(redirect_map.get(role, 'home'))
+                elif role == 'Donor':
+                    from .models import DonorProfile
+                    donor_profile_exists = DonorProfile.objects.filter(user=user).exists()
+                    if not donor_profile_exists:
+                        return redirect('donor_profile') 
+                    else:
+                        return redirect('donorhome') 
+                return redirect('home')
             else:
                 return render(request, "login.html", {
                     'error': "Selected role doesn't match your account.",
@@ -65,7 +69,6 @@ def user_login(request):
             'admin_user': admin_user
         })
     return render(request, "login.html", {'admin_user': admin_user})
-
 
 
 def user_logout(request):
@@ -473,3 +476,25 @@ def patient_profile_view(request):
     profile = PatientProfile.objects.filter(user=request.user).first()
     return render(request, 'patient/patient_profile_view.html', {'profile': profile})
 
+def donor_profile(request):
+    try:
+        profile = DonorProfile.objects.get(user=request.user)
+    except DonorProfile.DoesNotExist:
+        profile = None
+    if request.method == 'POST':
+        form = DonorProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            patient_profile = form.save(commit=False)
+            patient_profile.user = request.user
+            patient_profile.save()
+            messages.success(request, "Profile saved successfully!")
+            return redirect('donorhome')
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = DonorProfileForm(instance=profile)
+    return render(request, 'donor/donor_profile.html', {'form': form, 'profile': profile})
+
+def donor_profile_view(request):
+    donor = DonorProfile.objects.filter(user=request.user).first()
+    return render(request,'donor/donor_profile_view.html', {'donor': donor})

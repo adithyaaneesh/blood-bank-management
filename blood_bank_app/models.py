@@ -128,3 +128,15 @@ class PatientProfile(models.Model):
 
     def __str__(self):
         return self.full_name
+    
+class DonorProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    full_name = models.CharField(max_length=255)
+    age = models.PositiveIntegerField()
+    gender = models.CharField(max_length=20)
+    blood_group = models.CharField(max_length=5)
+    phone_number = models.CharField(max_length=20)
+    address = models.TextField()
+
+    def __str__(self):
+        return self.full_name
