@@ -67,12 +67,20 @@ def index(request):
 
 # Admin Dashboard Views
 
+# def dashboard(request):
+#     total_units = BloodStock.objects.aggregate(total=Sum('units'))['total'] or 0
+#     total_donors = DonorForm.objects.count()
+#     total_requests = DonorForm.objects.count() + BloodRequest.objects.count()
+#     donor_approved = DonorForm.objects.filter(status__iexact='Approved').count()
+#     blood_approved = BloodRequest.objects.filter(status__iexact='Accepted').exclude(role='Donor').count()
+#     approved_requests = donor_approved + blood_approved
+
 def dashboard(request):
     total_units = BloodStock.objects.aggregate(total=Sum('units'))['total'] or 0
     total_donors = DonorForm.objects.count()
-    total_requests = DonorForm.objects.count() + BloodRequest.objects.count()
-    donor_approved = DonorForm.objects.filter(status__iexact='Approved').count()
-    blood_approved = BloodRequest.objects.filter(status__iexact='Accepted').exclude(role='Donor').count()
+    total_blood_requests = BloodRequest.objects.filter(role__in=['Patient', 'Hospital']).count() + BloodRequest.objects.count()
+    donor_approved = DonorForm.objects.filter(status='Approved').count()
+    blood_approved = BloodRequest.objects.filter(status='Accepted', role__in=['Patient', 'Hospital']).count()
     approved_requests = donor_approved + blood_approved
 
     blood_data = {group: 0 for group, _ in BloodStock.BLOOD_GROUPS}
@@ -82,7 +90,7 @@ def dashboard(request):
     context = {
         'available_donors': total_donors,
         'total_blood_units': total_units,
-        'total_requests': total_requests,
+        'total_requests': total_blood_requests,
         'approved_requests': approved_requests,
         'a_positive': blood_data.get('A+', 0),
         'a_negative': blood_data.get('A-', 0),
