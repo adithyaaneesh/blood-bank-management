@@ -139,6 +139,11 @@
         #defaultMsg {
             font-style: italic;
         }
+        input.auto-filled {
+            box-shadow: 0 0 8px rgba(55, 66, 250, 0.4);
+            transition: box-shadow 0.4s ease;
+        }
+
     </style>
 </head>
 <body>
@@ -209,11 +214,19 @@
     const testPassword = document.getElementById('testPassword');
     const defaultMsg = document.getElementById('defaultMsg');
     const credDetails = document.getElementById('credDetails');
+    const credentialsBox = document.getElementById('credentialsBox');
+
+    const usernameInput = document.querySelector('input[name="username"]');
+    const passwordInput = document.querySelector('input[name="password"]');
+
+    let selectedRole = null;
 
     roleInputs.forEach(input => {
         input.addEventListener('change', function() {
             const role = this.value;
             const creds = credentials[role];
+            selectedRole = role;
+
             if (creds) {
                 roleName.textContent = `${role} Login Credentials`;
                 testUsername.textContent = creds.username;
@@ -223,6 +236,24 @@
             }
         });
     });
+    credentialsBox.addEventListener('click', function() {
+        if (!selectedRole) {
+            alert("Please select a role first.");
+            return;
+        }
+        const creds = credentials[selectedRole];
+        usernameInput.value = creds.username;
+        passwordInput.value = creds.password;
+
+        usernameInput.classList.add('auto-filled');
+        passwordInput.classList.add('auto-filled');
+        setTimeout(() => {
+            usernameInput.classList.remove('auto-filled');
+            passwordInput.classList.remove('auto-filled');
+        }, 600);
+    });
 </script>
+
+
 </body>
 </html>
