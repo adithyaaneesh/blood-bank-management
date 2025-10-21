@@ -106,15 +106,3 @@ class BloodRequest(models.Model):
     def __str__(self):
         return f"{self.fname} ({self.blood_group}) - {self.status}"
 
-
-class HospitalRequestForm(models.Model):
-    hospitalname = models.CharField(max_length=20)
-    email = models.EmailField(max_length=20)
-    phone = models.CharField(max_length=20)
-    address = models.CharField(max_length=120)
-    blood_group = models.CharField(max_length=5, choices=BLOOD_GROUP_CHOICES)
-    units = models.PositiveIntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.hospitalname

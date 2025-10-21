@@ -3,10 +3,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
-from .forms import UserRegistrationForm, HospitalForm
+from .forms import UserRegistrationForm
 from .models import (
-    BloodRequest, BloodStock, DonorForm,
-    HospitalRequestForm, Credential
+    BloodRequest, BloodStock, DonorForm, Credential
 )
 
 User = get_user_model()
