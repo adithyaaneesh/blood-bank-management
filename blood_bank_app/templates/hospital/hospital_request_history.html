@@ -54,7 +54,6 @@
                    <th>Name</th>
                    <th>Blood Group</th>
                    <th>Units</th>
-                   <th>Reason</th>
                    <th>Status</th>
                    <th>Requested On</th>
                </tr>
@@ -66,7 +65,6 @@
                    <td>{{ req.fname }}</td>
                    <td>{{ req.blood_group }}</td>
                    <td>{{ req.units }}</td>
-                   <td>{{ req.reason }}</td>
                    <td>
                        {% if req.status == 'Accepted' %}
                            <span class="badge bg-success">Approved</span>

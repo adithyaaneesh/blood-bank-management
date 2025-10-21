@@ -309,10 +309,8 @@ def reject_request(request, pk):
 
 # Hospital Views
 
-
 def hospital_home(request):
-    hospital_requests = BloodRequest.objects.filter(user=request.user)
-
+    hospital_requests = BloodRequest.objects.filter(user=request.user, role='Hospital')
     context = {
         'stocks': BloodStock.objects.all().order_by('blood_group'),
         'total_requests': hospital_requests.count(),
@@ -322,25 +320,28 @@ def hospital_home(request):
     }
     return render(request, 'hospital/hospital_home.html', context)
 
-
 def hospital_request_form(request):
     if request.method == 'POST':
-        HospitalRequestForm.objects.create(
+        BloodRequest.objects.create(
             user=request.user,
-            hospitalname=request.POST.get('hospitalname'),
+            fname=request.POST.get('hospitalname'),
             email=request.POST.get('email'),
-            phone=request.POST.get('phonenum'),
-            address=request.POST.get('address'),
+            phonenum=request.POST.get('phonenum'),
+            age=0,
+            reason=request.POST.get('address'),
             blood_group=request.POST.get('blood_group'),
             units=request.POST.get('units'),
+            gender='N/A', 
+            role='Hospital',
+            status='Pending',
         )
         return redirect('hospital_request_history')
-    return render(request,'hospital/hospital_request_form.html')
-
+    return render(request, 'hospital/hospital_request_form.html')
 
 def hospital_request_history(request):
-    requests = HospitalRequestForm.objects.all()
+    requests = BloodRequest.objects.filter(user=request.user, role='Hospital')
     return render(request, 'hospital/hospital_request_history.html', {'requests': requests})
+
 
 def hospital_stock(request):
     stocks = BloodStock.objects.all()
