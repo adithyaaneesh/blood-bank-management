@@ -4,9 +4,9 @@ from django.db.models import Sum
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
 from django.contrib import messages
-from .forms import UserRegistrationForm, HospitalForm
+from .forms import UserRegistrationForm, HospitalForm, PatientProfileForm
 from .models import (
-    BloodRequest, BloodStock, DonorForm, Credential, HospitalDetails
+    BloodRequest, BloodStock, DonorForm, Credential, HospitalDetails, PatientProfile
 )
 
 User = get_user_model()
@@ -41,12 +41,18 @@ def user_login(request):
                 if role == 'Hospital':
                     hospital_profile_exists = HospitalDetails.objects.exists()
                     if not hospital_profile_exists:
-                        return redirect('hospital_profile')
+                        return redirect('hospital_profile') 
                     else:
                         return redirect('hospitalhome')
+                elif role == 'Patient':
+                    from .models import PatientProfile 
+                    patient_profile_exists = PatientProfile.objects.filter(user=user).exists()
+                    if not patient_profile_exists:
+                        return redirect('patient_profile') 
+                    else:
+                        return redirect('patienthome')
                 redirect_map = {
-                    'Patient': 'patient_details',
-                    'Donor': 'donor_details'
+                    'Donor': 'donor_details',
                 }
                 return redirect(redirect_map.get(role, 'home'))
             else:
@@ -440,3 +446,30 @@ def hospital_profile(request):
         'form': form,
         'hospital': hospital
     })
+
+
+def patient_profile(request):
+    try:
+        profile = PatientProfile.objects.get(user=request.user)
+    except PatientProfile.DoesNotExist:
+        profile = None
+
+    if request.method == 'POST':
+        form = PatientProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            patient_profile = form.save(commit=False)
+            patient_profile.user = request.user
+            patient_profile.save()
+            messages.success(request, "Profile saved successfully!")
+            return redirect('patienthome')
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = PatientProfileForm(instance=profile)
+
+    return render(request, 'patient/patient_profile.html', {'form': form, 'profile': profile})
+
+def patient_profile_view(request):
+    profile = PatientProfile.objects.filter(user=request.user).first()
+    return render(request, 'patient/patient_profile_view.html', {'profile': profile})
+

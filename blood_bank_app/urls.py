@@ -44,4 +44,10 @@ urlpatterns = [
     path('hospital/profile/', views.hospital_profile, name='hospital_profile'),
     path('hospital/profile/view/', views.hospital_profile_view, name='hospital_profile_view'),
 
+
+    path('patient/profile/', views.patient_profile, name='patient_profile'),
+    path('patient/profile/view/', views.patient_profile_view, name='patient_profile_view'), 
+
+    # path('donor/profile/', views.donor_details, name='donor_details'),
+    # path('donor/view/', views.donor_profile, name='donor_profile'), 
 ]
