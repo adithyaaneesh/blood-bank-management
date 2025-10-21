@@ -403,3 +403,12 @@ def admin_hospitals(request):
     hospitals = Credential.objects.filter(role='Hospital').select_related('user')
     return render(request, 'admin/admin_hospitals.html', {'hospitals': hospitals})
 
+# def admin_profile(request,admin_id):
+#     if not request.user.is_superuser:
+#         return redirect('home')
+#     user = get_object_or_404(User, id=admin_id)
+#     return render(request, 'admin_profile.html', {'user': user})
+def admin_profile(request):
+    if not request.user.is_superuser:
+        return redirect('home')
+    return render(request, 'admin/admin_profile.html', {'user': request.user})

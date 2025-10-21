@@ -91,7 +91,7 @@
                 <i class="fa-solid fa-user-circle"></i> {{ request.user.username }}
             </button>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
-                <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user"></i> Profile</a></li>
+                <li><a class="dropdown-item" href="{% url 'admin_profile' %}"><i class="fa-solid fa-user"></i> Profile</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item text-danger" href="{% url 'logout' %}" onclick="return confirmLogout()">
                     <i class="fa-solid fa-right-from-bracket"></i> Logout

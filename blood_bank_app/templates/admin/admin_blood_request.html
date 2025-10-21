@@ -13,8 +13,6 @@
             background-color: #f5f7fa;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
-        /* Navbar */
         .navbar {
             background: linear-gradient(90deg, #1F78C9, #007BFF);
             padding: 15px 30px;
@@ -23,7 +21,6 @@
             font-size: 24px;
             font-weight: 600;
         }
-
         .dropdown .btn {
             background-color: #fff;
             color: #1F78C9;
@@ -35,8 +32,6 @@
         .dropdown .btn:hover {
             background-color: #e9f3ff;
         }
-
-        /* Sidebar */
         .sidebar {
             min-height: 100vh;
             background: #fff;
@@ -57,20 +52,16 @@
             color: #fff;
             border-radius: 6px;
         }
-
-        /* Table + Cards */
         .card-dashboard {
             background: #fff;
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             padding: 20px;
         }
-
         h2 {
             color: #1F78C9;
             font-weight: 600;
         }
-
         .table th {
             background-color: #1F78C9;
             color: white;
@@ -80,7 +71,6 @@
             text-align: center;
             vertical-align: middle;
         }
-
         .badge {
             font-size: 0.9rem;
         }
@@ -94,7 +84,7 @@
                 <i class="fa-solid fa-user-circle"></i> {{ request.user.username }}
             </button>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
-                <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user"></i> Profile</a></li>
+                <li><a class="dropdown-item" href="{% url 'admin_profile' %}"><i class="fa-solid fa-user"></i> Profile</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item text-danger" href="{% url 'logout' %}" onclick="return confirmLogout()">
                     <i class="fa-solid fa-right-from-bracket"></i> Logout
@@ -102,10 +92,8 @@
             </ul>
         </div>
     </nav>
-
     <div class="container-fluid">
         <div class="row">
-            <!-- Sidebar -->
             <div class="col-md-2 p-3 sidebar">
                 <nav class="nav flex-column">
                     <a class="nav-link" href="{% url 'dashboard' %}">
@@ -139,13 +127,11 @@
                 </div>
             {% endfor %}
             {% endif %}
-
             <div class="col-md-10 p-4">
                 <div class="card-dashboard">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h2 class="mb-0"><i class="fa-solid fa-hand-holding-droplet"></i>Blood Requests</h2>
                     </div>
-
                     <div class="table-responsive">
                        <table class="table table-striped">
                             <thead class="table-danger">
@@ -200,7 +186,6 @@
             </div>
         </div>
     </div>
-
     <script>
         function confirmLogout() {
             return confirm("Are you sure you want to log out?");

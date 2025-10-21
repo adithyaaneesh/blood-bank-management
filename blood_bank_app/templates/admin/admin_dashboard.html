@@ -12,8 +12,6 @@
             background-color: #f5f7fa;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
-        /* Navbar */
         .navbar {
             background: linear-gradient(90deg, #1F78C9, #007BFF);
             padding: 15px 30px;
@@ -22,7 +20,6 @@
             font-size: 24px;
             font-weight: 600;
         }
-
         .dropdown .btn {
             background-color: #fff;
             color: #1F78C9;
@@ -34,8 +31,6 @@
         .dropdown .btn:hover {
             background-color: #e9f3ff;
         }
-
-        /* Sidebar */
         .sidebar {
             min-height: 100vh;
             background: #fff;
@@ -56,13 +51,11 @@
             color: #fff;
             border-radius: 6px;
         }
-
         .summary-cards {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
         }
-
         .summary-card {
             flex: 1 1 200px;
             background: #fff;
@@ -111,7 +104,7 @@
                 <i class="fa-solid fa-user-circle"></i> {{ request.user.username }}
             </button>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
-                <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user"></i> Profile</a></li>
+                <li><a class="dropdown-item" href="{% url 'admin_profile' %}"><i class="fa-solid fa-user"></i> Profile</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li>
                     <a class="dropdown-item text-danger" href="{% url 'logout' %}" onclick="return confirmLogout()">
@@ -121,7 +114,6 @@
             </ul>
         </div>
     </nav>
-
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-2 p-3 sidebar">
@@ -221,7 +213,6 @@
             </div>
         </div>
     </div>
-
     <script>
         function confirmLogout() {
             return confirm("Are you sure you want to log out?");

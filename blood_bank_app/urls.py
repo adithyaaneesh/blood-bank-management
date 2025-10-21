@@ -40,4 +40,9 @@ urlpatterns = [
     path('hospitalrequests/', views.hospital_request_history, name='hospital_request_history'),
 
 
+    path('adminprofile/profile/', views.admin_profile, name='admin_profile')
+    # path('adminprofile/profile/<int:admin_id>/', views.admin_profile, name='admin_profile')
+
+
+
 ]
