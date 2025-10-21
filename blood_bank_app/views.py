@@ -83,9 +83,10 @@ def dashboard(request):
     total_units = BloodStock.objects.aggregate(total=Sum('units'))['total'] or 0
     total_donors = DonorForm.objects.count()
     total_requests = DonorForm.objects.count() + BloodRequest.objects.count()
-    donor_approved = DonorForm.objects.filter(status='Approved').count()
-    blood_approved = BloodRequest.objects.filter(status='Accepted').count()
+    donor_approved = DonorForm.objects.filter(status__iexact='Approved').count()
+    blood_approved = BloodRequest.objects.filter(status__iexact='Accepted').exclude(role='Donor').count()
     approved_requests = donor_approved + blood_approved
+
     blood_data = {group: 0 for group, _ in BloodStock.BLOOD_GROUPS}
     for stock in BloodStock.objects.all():
         blood_data[stock.blood_group] = stock.units
