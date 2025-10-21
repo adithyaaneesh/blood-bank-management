@@ -82,9 +82,10 @@ def index(request):
 def dashboard(request):
     total_units = BloodStock.objects.aggregate(total=Sum('units'))['total'] or 0
     total_donors = DonorForm.objects.count()
-    total_requests = BloodRequest.objects.count()
-    approved_requests = BloodRequest.objects.filter(status='Accepted').count()
-
+    total_requests = DonorForm.objects.count() + BloodRequest.objects.count()
+    donor_approved = DonorForm.objects.filter(status='Approved').count()
+    blood_approved = BloodRequest.objects.filter(status='Accepted').count()
+    approved_requests = donor_approved + blood_approved
     blood_data = {group: 0 for group, _ in BloodStock.BLOOD_GROUPS}
     for stock in BloodStock.objects.all():
         blood_data[stock.blood_group] = stock.units
@@ -105,6 +106,7 @@ def dashboard(request):
         'blood_stock': total_units,
     }
     return render(request, 'admin/admin_dashboard.html', context)
+
 
 
 # Blood Stock Views
