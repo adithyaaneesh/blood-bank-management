@@ -51,7 +51,7 @@ class UserRegistrationForm(forms.ModelForm):
 
 
 
-class HospitalRegistrationForm(forms.ModelForm):
+class HospitalForm(forms.ModelForm):
     hospitalname = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     phonenumber = forms.CharField(max_length=15, widget=forms.TextInput(attrs={'class': 'form-control'}))
     address = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 2}))
@@ -81,30 +81,6 @@ class HospitalRegistrationForm(forms.ModelForm):
             hospital.save()
         return hospital
 
-
-
-# class DonateForm(forms.ModelForm):
-#     donation_date = forms.DateField(
-#         widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control mb-3'}),
-#         required=True,
-#         label="Donation Date"
-#     )
-
-#     class Meta:
-#         model = Donor
-#         fields = ['name', 'email', 'blood_group', 'units', 'donation_date']
-#         widgets = {
-#             'name': forms.TextInput(attrs={'class': 'form-control mb-3'}),
-#             'email': forms.EmailInput(attrs={'class': 'form-control mb-3'}),
-#             'blood_group': forms.Select(attrs={'class': 'form-control mb-3'}),
-#             'units': forms.NumberInput(attrs={'class': 'form-control mb-3'}),
-#         }
-
-#     def clean_donation_date(self):
-#         date = self.cleaned_data.get('donation_date')
-#         if not date:
-#             raise forms.ValidationError("Please enter a valid date in YYYY-MM-DD format.")
-#         return date
 
 
 class DonorFormForm(forms.ModelForm):

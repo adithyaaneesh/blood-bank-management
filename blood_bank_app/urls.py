@@ -5,7 +5,6 @@ urlpatterns = [
     
     path('bloodstock/', views.blood_stock_list, name='blood_stock_list'),
     path('register/', views.register, name='register'),
-    path('hospital_register/', views.hospital_register, name='hospitalregister'),
     path('login/', views.user_login, name='login'),
     path('logout/', views.user_logout, name='logout'),
     path('', views.index, name='home'),
@@ -36,9 +35,9 @@ urlpatterns = [
     path('blood-request/', views.admin_blood_request, name='admin_blood_request'),
     path('approve-request/<int:pk>/', views.approve_request, name='approve_request'),
     path('reject-request/<int:pk>/', views.reject_request, name='reject_request'),
-
     path('deletedonorreq/', views.delete_my_donor_requests, name='delete_my_donor_requests'),
-    path('deleallreq/', views.delete_all_donor_requests, name='delete_all_donor_requests'),
+    path('deletealldonors/', views.delete_all_donor_requests, name='delete_all_donor_requests'),
+    path('hospitalrequests/', views.hospital_request_history, name='hospital_request_history'),
 
 
 ]

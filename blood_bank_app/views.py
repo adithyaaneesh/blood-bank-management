@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
-from .forms import UserRegistrationForm, HospitalRegistrationForm
+from .forms import UserRegistrationForm, HospitalForm
 from .models import (
     BloodRequest, BloodStock, DonorForm,
     HospitalRequestForm, Credential
@@ -22,18 +22,6 @@ def register(request):
     else:
         form = UserRegistrationForm()
     return render(request, 'register.html', {'form': form})
-
-
-def hospital_register(request):
-    if request.method == "POST":
-        form = HospitalRegistrationForm(request.POST)
-        if form.is_valid():
-            hospital_user = form.save()
-            Credential.objects.create(user=hospital_user, role='Hospital')
-            return redirect('login')
-    else:
-        form = HospitalRegistrationForm()
-    return render(request, 'hospital_register.html', {'form': form})
 
 
 def user_login(request):
@@ -276,7 +264,6 @@ def patient_request_history(request):
     requests = BloodRequest.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'patient/request_history.html', {'requests': requests})
 
-
 # Admin Blood Request Actions
 
 def admin_blood_request(request):
@@ -324,13 +311,22 @@ def reject_request(request, pk):
 
 
 def hospital_home(request):
-    stocks = BloodStock.objects.all().order_by('blood_group')
-    return render(request, 'hospital/hospital_home.html', {'stocks': stocks})
+    hospital_requests = BloodRequest.objects.filter(user=request.user)
+
+    context = {
+        'stocks': BloodStock.objects.all().order_by('blood_group'),
+        'total_requests': hospital_requests.count(),
+        'approved_requests': hospital_requests.filter(status='Accepted').count(),
+        'available_donors': DonorForm.objects.count(),
+        'username': request.user.username,
+    }
+    return render(request, 'hospital/hospital_home.html', context)
 
 
 def hospital_request_form(request):
     if request.method == 'POST':
         HospitalRequestForm.objects.create(
+            user=request.user,
             hospitalname=request.POST.get('hospitalname'),
             email=request.POST.get('email'),
             phone=request.POST.get('phonenum'),
@@ -338,9 +334,13 @@ def hospital_request_form(request):
             blood_group=request.POST.get('blood_group'),
             units=request.POST.get('units'),
         )
-        return redirect('hospitalhome')
-    return render(request, 'hospital/hospital_request_form.html')
+        return redirect('hospital_request_history')
+    return render(request,'hospital/hospital_request_form.html')
 
+
+def hospital_request_history(request):
+    requests = HospitalRequestForm.objects.all()
+    return render(request, 'hospital/hospital_request_history.html', {'requests': requests})
 
 def hospital_stock(request):
     stocks = BloodStock.objects.all()
