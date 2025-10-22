@@ -108,6 +108,7 @@ class BloodRequest(models.Model):
         return f"{self.fname} ({self.blood_group}) - {self.status}"
 
 class HospitalDetails(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=255)
     address = models.TextField()
     email = models.EmailField(unique=True)
