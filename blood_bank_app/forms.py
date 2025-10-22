@@ -87,11 +87,15 @@ class PatientProfileForm(forms.ModelForm):
 
 
 
+
 class DonorProfileForm(forms.ModelForm):
     class Meta:
         model = DonorProfile
         fields = '__all__'
         exclude = ['user', 'bmi', 'created_at', 'updated_at']
+        widgets = {
+            'profile_picture': forms.ClearableFileInput(attrs={'class': 'form-control', 'label': ''}),
+        }
 
     def clean(self):
         cleaned_data = super().clean()

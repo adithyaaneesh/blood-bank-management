@@ -490,13 +490,46 @@ def patient_profile_view(request):
     profile = PatientProfile.objects.filter(user=request.user).first()
     return render(request, 'patient/patient_profile_view.html', {'profile': profile})
 
+# @login_required
+# def donor_profile(request):
+#     profile, _ = DonorProfile.objects.get_or_create(user=request.user)
+
+#     if request.method == 'POST':
+#         form = DonorProfileForm(request.POST, request.FILES, instance=profile)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, "Donor profile saved successfully!")
+#             return redirect('donorhome')
+#         else:
+#             messages.error(request, "Please correct the errors below.")
+#     else:
+#         form = DonorProfileForm(instance=profile)
+
+#     return render(request, 'donor/donor_profile.html', {'form': form, 'profile': profile})
+
+
+# @login_required
+# def donor_profile_view(request):
+#     try:
+#         profile = DonorProfile.objects.get(user=request.user)
+#     except DonorProfile.DoesNotExist:
+#         profile = None  # Profile not created yet
+
+#     return render(request, 'donor/donor_profile_view.html', {'profile': profile})
+
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .models import DonorProfile
+from .forms import DonorProfileForm
 
 @login_required
 def donor_profile(request):
     profile, _ = DonorProfile.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
-        form = DonorProfileForm(request.POST, instance=profile)
+        form = DonorProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
             messages.success(request, "Donor profile saved successfully!")
@@ -506,13 +539,13 @@ def donor_profile(request):
     else:
         form = DonorProfileForm(instance=profile)
 
-    return render(request, 'donor/donor_profile.html', {'form': form, 'profile': profile })
-
+    return render(request, 'donor/donor_profile.html', {'form': form, 'profile': profile})
 
 @login_required
 def donor_profile_view(request):
-    profile = DonorProfile.objects.filter(user=request.user).first()
-    if not profile:
-        return redirect('donor_profile') 
+    try:
+        profile = DonorProfile.objects.get(user=request.user)
+    except DonorProfile.DoesNotExist:
+        profile = None
 
     return render(request, 'donor/donor_profile_view.html', {'profile': profile})

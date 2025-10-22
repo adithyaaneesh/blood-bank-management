@@ -158,6 +158,13 @@ class DonorProfile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    profile_picture = models.ImageField(
+        upload_to='profile_pics/',
+        default='profile_pics/default.jpg',
+        blank=True,
+        null=True
+    )
+
     def calculate_bmi(self):
         try:
             height_m = self.height / 100
