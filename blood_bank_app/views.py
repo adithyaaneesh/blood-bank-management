@@ -1,4 +1,7 @@
+import base64
 from datetime import date
+import io
+from matplotlib import pyplot as plt
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum
 from django.contrib.auth import authenticate, login, logout
@@ -83,19 +86,11 @@ def index(request):
 
 # Admin Dashboard Views
 
-# def dashboard(request):
-#     total_units = BloodStock.objects.aggregate(total=Sum('units'))['total'] or 0
-#     total_donors = DonorForm.objects.count()
-#     total_requests = DonorForm.objects.count() + BloodRequest.objects.count()
-#     donor_approved = DonorForm.objects.filter(status__iexact='Approved').count()
-#     blood_approved = BloodRequest.objects.filter(status__iexact='Accepted').exclude(role='Donor').count()
-#     approved_requests = donor_approved + blood_approved
-
 @login_required
 def dashboard(request):
     total_units = BloodStock.objects.aggregate(total=Sum('units'))['total'] or 0
     total_donors = DonorForm.objects.count()
-    total_blood_requests = BloodRequest.objects.filter(role__in=['Patient', 'Hospital']).count() + BloodRequest.objects.count()
+    total_blood_requests = BloodRequest.objects.filter(role__in=['Patient', 'Hospital']).count() + DonorForm.objects.count()
     donor_approved = DonorForm.objects.filter(status='Approved').count()
     blood_approved = BloodRequest.objects.filter(status='Accepted', role__in=['Patient', 'Hospital']).count()
     approved_requests = donor_approved + blood_approved
@@ -104,24 +99,29 @@ def dashboard(request):
     for stock in BloodStock.objects.all():
         blood_data[stock.blood_group] = stock.units
 
+    labels = blood_data.keys()
+    sizes = blood_data.values()
+    colors = ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF','#FF9F40','#FF6384','#36A2EB']
+
+    fig, ax = plt.subplots()
+    ax.pie(sizes, labels=labels, autopct='%1.1f%%', colors=colors, startangle=90)
+    ax.axis('equal') 
+
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png', bbox_inches='tight')
+    buf.seek(0)
+    chart_base64 = base64.b64encode(buf.read()).decode('utf-8')
+    buf.close()
+
     context = {
         'available_donors': total_donors,
         'total_blood_units': total_units,
         'total_requests': total_blood_requests,
         'approved_requests': approved_requests,
-        'a_positive': blood_data.get('A+', 0),
-        'a_negative': blood_data.get('A-', 0),
-        'b_positive': blood_data.get('B+', 0),
-        'b_negative': blood_data.get('B-', 0),
-        'ab_positive': blood_data.get('AB+', 0),
-        'ab_negative': blood_data.get('AB-', 0),
-        'o_positive': blood_data.get('O+', 0),
-        'o_negative': blood_data.get('O-', 0),
         'blood_stock': total_units,
+        'blood_chart': chart_base64,
     }
     return render(request, 'admin/admin_dashboard.html', context)
-
-
 
 # Blood Stock Views
 
