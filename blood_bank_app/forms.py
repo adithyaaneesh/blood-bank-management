@@ -86,15 +86,22 @@ class PatientProfileForm(forms.ModelForm):
         }
 
 
+
 class DonorProfileForm(forms.ModelForm):
     class Meta:
         model = DonorProfile
-        fields = ['full_name', 'age', 'gender', 'blood_group', 'phone_number', 'address']
-        widgets = {
-            'full_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'age': forms.NumberInput(attrs={'class': 'form-control'}),
-            'gender': forms.Select(attrs={'class': 'form-control'}, choices=[('Male','Male'),('Female','Female'),('Other','Other')]),
-            'blood_group': forms.Select(attrs={'class': 'form-control'}, choices=[('A+','A+'),('A-','A-'),('B+','B+'),('B-','B-'),('AB+','AB+'),('AB-','AB-'),('O+','O+'),('O-','O-')]),
-            'phone_number': forms.TextInput(attrs={'class': 'form-control'}),
-            'address': forms.Textarea(attrs={'class': 'form-control', 'rows':3}),
-        }
+        fields = '__all__'
+        exclude = ['user', 'bmi', 'created_at', 'updated_at']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        taking_medicine = cleaned_data.get("taking_medicine")
+        medicine_details = cleaned_data.get("medicine_details")
+
+        if taking_medicine and not medicine_details:
+            self.add_error(
+                'medicine_details', 
+                "Please specify the medicine name and related disease."
+            )
+
+        return cleaned_data
