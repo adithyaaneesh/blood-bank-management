@@ -8,7 +8,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import UserRegistrationForm, HospitalForm, PatientProfileForm, DonorProfileForm
+from datetime import date, timedelta
+from .forms import UserRegistrationForm, HospitalForm, PatientProfileForm, DonorBasicForm, DonorEligibilityForm
 from .models import (
     BloodRequest, BloodStock, DonorForm, Credential, HospitalDetails, PatientProfile, DonorProfile
 )
@@ -492,62 +493,45 @@ def patient_profile_view(request):
     profile = PatientProfile.objects.filter(user=request.user).first()
     return render(request, 'patient/patient_profile_view.html', {'profile': profile})
 
-# @login_required
-# def donor_profile(request):
-#     profile, _ = DonorProfile.objects.get_or_create(user=request.user)
 
-#     if request.method == 'POST':
-#         form = DonorProfileForm(request.POST, request.FILES, instance=profile)
-#         if form.is_valid():
-#             form.save()
-#             messages.success(request, "Donor profile saved successfully!")
-#             return redirect('donorhome')
-#         else:
-#             messages.error(request, "Please correct the errors below.")
-#     else:
-#         form = DonorProfileForm(instance=profile)
-
-#     return render(request, 'donor/donor_profile.html', {'form': form, 'profile': profile})
-
-
-# @login_required
-# def donor_profile_view(request):
-#     try:
-#         profile = DonorProfile.objects.get(user=request.user)
-#     except DonorProfile.DoesNotExist:
-#         profile = None  # Profile not created yet
-
-#     return render(request, 'donor/donor_profile_view.html', {'profile': profile})
-
-
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from .models import DonorProfile
-from .forms import DonorProfileForm
 
 @login_required
 def donor_profile(request):
     profile, _ = DonorProfile.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
-        form = DonorProfileForm(request.POST, request.FILES, instance=profile)
+        form = DonorBasicForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
-            messages.success(request, "Donor profile saved successfully!")
-            return redirect('donorhome')
-        else:
-            messages.error(request, "Please correct the errors below.")
+            return redirect('donor_profile_view')
     else:
-        form = DonorProfileForm(instance=profile)
+        form = DonorBasicForm(instance=profile)
 
     return render(request, 'donor/donor_profile.html', {'form': form, 'profile': profile})
 
 @login_required
-def donor_profile_view(request):
-    try:
-        profile = DonorProfile.objects.get(user=request.user)
-    except DonorProfile.DoesNotExist:
-        profile = None
+def eligibility_check(request):
+    profile = get_object_or_404(DonorProfile, user=request.user)
+    if request.method == 'POST':
+        form = DonorEligibilityForm(request.POST, instance=profile)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.bmi = profile.calculate_bmi()
+            profile.available_status = True 
+            profile.save()
+            messages.success(request, "Eligibility details saved. You are eligible to donate!")
+            return redirect('donor_profile_view')
+        else:
+            profile.available_status = False
+            profile.save()
+    else:
+        form = DonorEligibilityForm(instance=profile)
 
+    return render(request, 'donor/eligibility_check.html', {'form': form, 'profile': profile})
+
+
+
+@login_required
+def donor_profile_view(request):
+    profile = get_object_or_404(DonorProfile, user=request.user)
     return render(request, 'donor/donor_profile_view.html', {'profile': profile})

@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from .models import Credential, DonorForm, HospitalDetails, PatientProfile, DonorProfile
+from django import forms
+from datetime import date, timedelta
 
 User = get_user_model()
 
@@ -86,26 +88,72 @@ class PatientProfileForm(forms.ModelForm):
         }
 
 
-
-
-class DonorProfileForm(forms.ModelForm):
+class DonorBasicForm(forms.ModelForm):
     class Meta:
         model = DonorProfile
-        fields = '__all__'
-        exclude = ['user', 'bmi', 'created_at', 'updated_at']
+        fields = ['name', 'age', 'gender', 'blood_group', 'phone_number', 'address', 'profile_picture']
         widgets = {
-            'profile_picture': forms.ClearableFileInput(attrs={'class': 'form-control', 'label': ''}),
+            'profile_picture': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
+
+class DonorEligibilityForm(forms.ModelForm):
+    class Meta:
+        model = DonorProfile
+        # Include only the fields relevant for eligibility
+        fields = [
+            'date_of_birth', 'gender', 'weight', 'hemoglobin', 
+            'systolic_pressure', 'diastolic_pressure', 
+            'blood_sugar', 'cholesterol', 'last_donated_date'
+        ]
 
     def clean(self):
         cleaned_data = super().clean()
-        taking_medicine = cleaned_data.get("taking_medicine")
-        medicine_details = cleaned_data.get("medicine_details")
+        errors = {}
 
-        if taking_medicine and not medicine_details:
-            self.add_error(
-                'medicine_details', 
-                "Please specify the medicine name and related disease."
-            )
+        # Calculate age
+        dob = cleaned_data.get('date_of_birth')
+        if dob:
+            age = (date.today() - dob).days // 365
+            if age < 18 or age > 65:
+                errors['date_of_birth'] = "Donor must be between 18 and 65 years old."
+
+        # Weight
+        weight = cleaned_data.get('weight')
+        if weight and weight < 50:
+            errors['weight'] = "Donor must weigh at least 50 kg."
+
+        # Hemoglobin
+        gender = cleaned_data.get('gender')
+        hemoglobin = cleaned_data.get('hemoglobin')
+        if gender == 'Male' and hemoglobin and hemoglobin < 13:
+            errors['hemoglobin'] = "Male donors must have hemoglobin >= 13 g/dL."
+        if gender == 'Female' and hemoglobin and hemoglobin < 12.5:
+            errors['hemoglobin'] = "Female donors must have hemoglobin >= 12.5 g/dL."
+
+        # Blood pressure
+        sys = cleaned_data.get('systolic_pressure')
+        dia = cleaned_data.get('diastolic_pressure')
+        if sys and dia:
+            if not (100 <= sys <= 180) or not (50 <= dia <= 100):
+                errors['systolic_pressure'] = "Blood pressure must be within normal range."
+                errors['diastolic_pressure'] = "Blood pressure must be within normal range."
+
+        # Blood sugar
+        sugar = cleaned_data.get('blood_sugar')
+        if sugar and sugar > 200:
+            errors['blood_sugar'] = "Blood sugar must be <= 200 mg/dL."
+
+        # Cholesterol
+        chol = cleaned_data.get('cholesterol')
+        if chol and chol > 200:
+            errors['cholesterol'] = "Cholesterol must be <= 200 mg/dL."
+
+        # Last donation
+        last_donated = cleaned_data.get('last_donated_date')
+        if last_donated and (date.today() - last_donated) < timedelta(days=90):
+            errors['last_donated_date'] = "At least 90 days must pass since the last donation."
+
+        if errors:
+            raise forms.ValidationError(errors)
 
         return cleaned_data

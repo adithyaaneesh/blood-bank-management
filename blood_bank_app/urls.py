@@ -50,7 +50,10 @@ urlpatterns = [
     path('patient/profile/view/', views.patient_profile_view, name='patient_profile_view'), 
 
     path('donor/profile/', views.donor_profile, name='donor_profile'),
+    path('donor/eligibility/', views.eligibility_check, name='eligibility_check'),
     path('donor/profile/view/', views.donor_profile_view, name='donor_profile_view'), 
+
+
 ]
 
 if settings.DEBUG:

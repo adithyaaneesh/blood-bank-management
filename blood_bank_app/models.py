@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from datetime import date, timedelta
+from django.utils import timezone
 from django.conf import settings
 
 User = get_user_model()
@@ -135,14 +136,35 @@ class PatientProfile(models.Model):
 
     def __str__(self):
         return self.full_name
+    
+# class DonorProfile(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     name = models.CharField(max_length=255)
+#     age = models.PositiveIntegerField(default=18)
+#     gender = models.CharField(max_length=20)
+#     blood_group = models.CharField(max_length=5)
+#     phone_number = models.CharField(max_length=20)
+#     address = models.TextField(blank=True, null=True)
+
+#     profile_picture = models.ImageField(
+#         upload_to='profile_pics/',
+#         default='profile_pics/default.jpg',
+#         blank=True,
+#         null=True
+#     )
+
+#     def __str__(self):
+#         return self.name
 
 class DonorProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, default='default@example.com')
     phone_number = models.CharField(max_length=15)
+    address = models.TextField(blank=True, null=True)
     blood_group = models.CharField(max_length=3, choices=BLOOD_GROUP_CHOICES)
-    date_of_birth = models.DateField(help_text="Donor must be 18-65 years old")
+    age = models.PositiveIntegerField(default=18)
+    date_of_birth = models.DateField(default=date(2000, 1, 1), help_text="Donor must be 18–65 years old")
     gender = models.CharField(max_length=10, choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')])
     
     height = models.FloatField(help_text="Height in centimeters")
@@ -162,7 +184,7 @@ class DonorProfile(models.Model):
     donation_count = models.PositiveIntegerField(default=0)
     available_status = models.BooleanField(default=True)
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
 
     profile_picture = models.ImageField(
@@ -181,36 +203,7 @@ class DonorProfile(models.Model):
 
     def save(self, *args, **kwargs):
         self.bmi = self.calculate_bmi()
-        self.check_eligibility()
         super().save(*args, **kwargs)
-
-    def check_eligibility(self):
-        age = (date.today() - self.date_of_birth).days // 365
-        if age < 18 or age > 65:
-            self.available_status = False
-            return
-        if self.weight < 50:
-            self.available_status = False
-            return
-        if self.gender == 'Male' and self.hemoglobin < 13:
-            self.available_status = False
-            return
-        if self.gender == 'Female' and self.hemoglobin < 12.5:
-            self.available_status = False
-            return
-        if not (100 <= self.systolic_pressure <= 180) or not (50 <= self.diastolic_pressure <= 100):
-            self.available_status = False
-            return
-        if self.blood_sugar > 200:
-            self.available_status = False
-            return
-        if self.cholesterol > 200:
-            self.available_status = False
-            return
-        if self.last_donated_date and (date.today() - self.last_donated_date) < timedelta(days=90):
-            self.available_status = False
-            return
-        self.available_status = True
 
     def __str__(self):
         return f"{self.name} ({self.blood_group})"

@@ -26,33 +26,24 @@
 
     {% if profile %}
     <div class="card">
-        {% if profile.profile_picture %}
-            <div class="text-center mb-3">
+        <div class="text-center mb-3">
+            {% if profile.profile_picture %}
                 <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="rounded-circle" width="120">
-            </div>
-        {% endif %}
+            {% else %}
+                <img src="{% static 'profile_pics/default.jpg' %}" alt="Default Picture" class="rounded-circle" width="120">
+            {% endif %}
+        </div>
 
         <p><span>Name:</span> {{ profile.name }}</p>
-        <p><span>Email:</span> {{ profile.email }}</p>
-        <p><span>Phone Number:</span> {{ profile.phone_number }}</p>
+        <p><span>Age:</span> {{ profile.age }}</p>
         <p><span>Gender:</span> {{ profile.gender }}</p>
         <p><span>Blood Group:</span> {{ profile.blood_group }}</p>
-        <p><span>Height:</span> {{ profile.height }} cm</p>
-        <p><span>Weight:</span> {{ profile.weight }} kg</p>
-        <p><span>BMI:</span> {{ profile.bmi }}</p>
-        <p><span>Hemoglobin:</span> {{ profile.hemoglobin }} g/dL</p>
-        <p><span>Blood Pressure:</span> {{ profile.systolic_pressure }}/{{ profile.diastolic_pressure }} mmHg</p>
-        <p><span>Blood Sugar:</span> {{ profile.blood_sugar }} mg/dL</p>
-        <p><span>Cholesterol:</span> {{ profile.cholesterol }} mg/dL</p>
-        <p><span>Taking Medicine:</span> {{ profile.taking_medicine|yesno:"Yes,No" }}</p>
-        {% if profile.taking_medicine %}
-            <p><span>Medicine Details:</span> {{ profile.medicine_details }}</p>
-        {% endif %}
-        <p><span>Donation Count:</span> {{ profile.donation_count }}</p>
-        <p><span>Available for Donation:</span> {{ profile.available_status|yesno:"Yes,No" }}</p>
+        <p><span>Phone Number:</span> {{ profile.phone_number }}</p>
+        <p><span>Address:</span> {{ profile.address }}</p>
 
         <div class="text-center mt-4">
             <a href="{% url 'donor_profile' %}" class="btn btn-danger">Edit Profile</a>
+            <a href="{% url 'eligibility_check' %}" class="btn btn-secondary">Eligibility Details</a>
             <a href="{% url 'donorhome' %}" class="btn btn-secondary">Home</a>
         </div>
     </div>
