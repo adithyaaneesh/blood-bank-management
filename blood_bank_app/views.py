@@ -95,24 +95,48 @@ def dashboard(request):
     donor_approved = DonorForm.objects.filter(status='Approved').count()
     blood_approved = BloodRequest.objects.filter(status='Accepted', role__in=['Patient', 'Hospital']).count()
     approved_requests = donor_approved + blood_approved
-
     blood_data = {group: 0 for group, _ in BloodStock.BLOOD_GROUP}
     for stock in BloodStock.objects.all():
         blood_data[stock.blood_group] = stock.units
 
-    labels = blood_data.keys()
-    sizes = blood_data.values()
-    colors = ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF','#FF9F40','#FF6384','#36A2EB']
+    labels = list(blood_data.keys())
+    sizes = list(blood_data.values())
 
-    fig, ax = plt.subplots()
-    ax.pie(sizes, labels=labels, autopct='%1.1f%%', colors=colors, startangle=90)
-    ax.axis('equal') 
+    colors = ["#A9A3C5", "#EBC8C0", "#CCDC82", "#C0E3EB", "#CDC0EB", '#EBC0DE', '#DEEBC0', "#C0EBCD"]
+
+    fig, ax = plt.subplots(figsize=(7,6), facecolor='white')
+
+    wedges, texts = ax.pie(
+        sizes,
+        colors=colors[:len(labels)],
+        startangle=90,
+        shadow=False,
+        wedgeprops={'edgecolor':'white', 'linewidth':1},
+        labels=labels,             
+        labeldistance=1.1,        
+        autopct=None,            
+        textprops={'fontsize':12, 'weight':'bold'}
+    )
+
+    ax.axis('equal')  
+
+    legend_labels = [f"{label}: {size} units" for label, size in zip(labels, sizes)]
+    ax.legend(
+        wedges,
+        legend_labels,
+        title="Blood Stock",
+        loc="center left",
+        bbox_to_anchor=(1, 0, 0.4, 1),
+        fontsize=12,
+        title_fontsize=13
+    )
 
     buf = io.BytesIO()
-    plt.savefig(buf, format='png', bbox_inches='tight')
+    plt.savefig(buf, format='png', bbox_inches='tight', transparent=True)
     buf.seek(0)
     chart_base64 = base64.b64encode(buf.read()).decode('utf-8')
     buf.close()
+    plt.close(fig)
 
     context = {
         'available_donors': total_donors,
@@ -122,7 +146,9 @@ def dashboard(request):
         'blood_stock': total_units,
         'blood_chart': chart_base64,
     }
+
     return render(request, 'admin/admin_dashboard.html', context)
+
 
 # Blood Stock Views
 
