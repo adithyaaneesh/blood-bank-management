@@ -95,7 +95,7 @@ def dashboard(request):
     blood_approved = BloodRequest.objects.filter(status='Accepted', role__in=['Patient', 'Hospital']).count()
     approved_requests = donor_approved + blood_approved
 
-    blood_data = {group: 0 for group, _ in BloodStock.BLOOD_GROUPS}
+    blood_data = {group: 0 for group, _ in BloodStock.BLOOD_GROUP}
     for stock in BloodStock.objects.all():
         blood_data[stock.blood_group] = stock.units
 
@@ -127,6 +127,8 @@ def dashboard(request):
 
 @login_required
 def blood_stock_list(request):
+    BloodStock.objects.filter(expiry_date__lt=date.today()).delete()
+
     stocks = BloodStock.objects.all()
     expired_stocks = [s for s in stocks if s.is_expired()]
     near_expiry_stocks = [s for s in stocks if s.is_near_expiry()]

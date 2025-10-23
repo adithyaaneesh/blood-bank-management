@@ -25,28 +25,34 @@ class Credential(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.role}"
 
-
-from datetime import timedelta, date
-
 class BloodStock(models.Model):
-    BLOOD_GROUPS = BLOOD_GROUP_CHOICES
-    blood_group = models.CharField(max_length=3, choices=BLOOD_GROUPS, unique=True)
+    BLOOD_GROUP = BLOOD_GROUP_CHOICES
+    blood_group = models.CharField(max_length=5,choices=BLOOD_GROUP_CHOICES, unique=True)
     units = models.PositiveIntegerField(default=0)
-    collection_date = models.DateField(auto_now_add=True)
+    collected_date = models.DateField(default=date.today)
     expiry_date = models.DateField(blank=True, null=True)
-    last_updated = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-        if not self.expiry_date:
-            self.expiry_date = self.collection_date + timedelta(days=35)
+        if not self.pk: 
+            self.collected_date = date.today()
+            self.expiry_date = self.collected_date + timedelta(days=35)
+        else:
+            old_stock = BloodStock.objects.filter(pk=self.pk).first()
+            if old_stock and old_stock.units != self.units:
+                self.collected_date = date.today()
+                self.expiry_date = self.collected_date + timedelta(days=35)
         super().save(*args, **kwargs)
-    def is_expired(self):
-        return self.expiry_date and self.expiry_date < date.today()
-    def is_near_expiry(self):
-        return self.expiry_date and (self.expiry_date - date.today()).days <= 5
-    def __str__(self):
-        return f"{self.blood_group} - {self.units} units"
 
+    def is_expired(self):
+        return date.today() > self.expiry_date if self.expiry_date else False
+
+    def is_near_expiry(self):
+        if self.expiry_date:
+            return 0 <= (self.expiry_date - date.today()).days <= 5
+        return False
+
+    def __str__(self):
+        return f"{self.blood_group} ({self.units} units)"
 
 
 class DonorForm(models.Model):

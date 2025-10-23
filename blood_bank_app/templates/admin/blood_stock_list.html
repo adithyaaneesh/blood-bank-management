@@ -168,7 +168,7 @@
                     class="{% if stock.is_expired %}table-danger{% elif stock.is_near_expiry %}table-warning{% endif %}">
                     <td>{{ stock.blood_group }}</td>
                     <td>{{ stock.units }}</td>
-                    <td>{{ stock.collection_date }}</td>
+                    <td>{{ stock.collected_date }}</td>
                     <td>{{ stock.expiry_date }}</td>
                     <td>
                         {% if stock.is_expired %}
