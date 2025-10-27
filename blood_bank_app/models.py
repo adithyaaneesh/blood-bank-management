@@ -89,7 +89,7 @@ class DonorForm(models.Model):
     consent = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    STATUS_CHOICES = [('Pending', 'Pending'), ('Approved', 'Approved'), ('Rejected', 'Rejected')]
+    STATUS_CHOICES = [('Pending', 'Pending'), ('Approved', 'Approved'), ('Rejected', 'Rejected')]                                                                                                                                                              
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
 
 

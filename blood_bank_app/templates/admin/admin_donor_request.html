@@ -12,15 +12,24 @@
         body {
             background-color: #f5f7fa;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
         }
+
+        /* Navbar fixed on top */
         .navbar {
             background: linear-gradient(90deg, #1F78C9, #007BFF);
             padding: 15px 30px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
         }
+
         .navbar h1 {
             font-size: 24px;
             font-weight: 600;
         }
+
         .dropdown .btn {
             background-color: #fff;
             color: #1F78C9;
@@ -29,159 +38,200 @@
             border-radius: 8px;
             padding: 8px 14px;
         }
+
         .dropdown .btn:hover {
             background-color: #e9f3ff;
         }
+
+        /* Sidebar fixed and no scroll */
         .sidebar {
-            min-height: 100vh;
+            position: fixed;
+            top: 60px; /* height of navbar */
+            left: 0;
+            width: 200px;
+            height: calc(100vh - 60px);
             background: #fff;
             box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+            padding-top: 20px;
+            overflow: hidden;
         }
+
         .sidebar .nav-link {
             color: #333;
             font-weight: 500;
             padding: 10px 15px;
         }
+
         .sidebar .nav-link.active {
             background-color: #1F78C9;
             color: #fff;
             border-radius: 6px;
+            padding-left: 25px;  /* extra left padding */
+            padding-right: 25px; /* extra right padding */
         }
+
         .sidebar .nav-link:hover {
             background-color: #85b3df;
             color: #fff;
             border-radius: 6px;
         }
+
+        /* Main content scrollable */
+        .main-content {
+            margin-left: 200px; /* width of sidebar */
+            padding: 90px 30px 30px 30px; /* top padding includes navbar */
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+
+        /* Dashboard card styling */
         .card-dashboard {
             background: #fff;
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             padding: 20px;
         }
+
         h2 {
             color: #1F78C9;
             font-weight: 600;
         }
+
         .table th {
             background-color: #1F78C9;
             color: white;
             text-align: center;
         }
+
         .table td {
             text-align: center;
             vertical-align: middle;
         }
+
         .badge {
             font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
-     <nav class="navbar d-flex justify-content-between align-items-center">
-        <h1 class="text-white mb-0">Admin Dashboard</h1>
-        <div class="dropdown">
-            <button class="btn btn-light dropdown-toggle" type="button" id="adminDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fa-solid fa-user-circle"></i> {{ request.user.username }}
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
-                <li><a class="dropdown-item" href="{% url 'admin_profile' %}"><i class="fa-solid fa-user"></i> Profile</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item text-danger" href="{% url 'logout' %}" onclick="return confirmLogout()">
-                    <i class="fa-solid fa-right-from-bracket"></i> Logout
-                </a></li>
-            </ul>
-        </div>
-    </nav>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-2 p-3 sidebar">
-                <nav class="nav flex-column">
-                    <a class="nav-link" href="{% url 'dashboard' %}">
-                        <i class="fa-solid fa-home"></i> Dashboard
-                    </a>
-                    <a class="nav-link" href="{% url 'admin_patients' %}">
-                        <i class="fa-solid fa-users"></i> Patients
-                    </a>
-                    <a class="nav-link" href="{% url 'admin_hospitals' %}">
-                        <i class="fa-solid fa-hospital"></i> Hospitals
-                    </a>
-                    <a class="nav-link" href="{% url 'admin_donors_list' %}">
-                        <i class="fa-solid fa-hand-holding-droplet"></i> Donors
-                    </a>
-                    <a class="nav-link active" href="{% url 'admin_donor_request' %}">
-                        <i class="fa-solid fa-envelope-open-text"></i> Donor Requests
-                    </a>
-                    <a class="nav-link" href="{% url 'blood_stock_list' %}">
-                        <i class="fa-solid fa-droplet"></i> Blood Stock
-                    </a>
-                    <a class="nav-link" href="{% url 'admin_blood_request' %}">
-                        <i class="fa-solid fa-envelope-open-text"></i> Blood Request
-                    </a>
-                </nav>
-            </div>
-            <div class="col-md-10 p-4">
-                <div class="card-dashboard">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2 class="mb-0"><i class="fa-solid fa-hand-holding-droplet"></i>Blood Requests</h2>
-                    </div>
 
-                    <div class="table-responsive">
-                       <table class="table table-striped">
-                            <thead class="table-danger">
-                                <tr>
-                                <th>#</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Role</th>
-                                <th>Blood Group</th>
-                                <th>Units</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for req in donor_records %}
-                                <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{ req.fname }}</td>
-                                <td>{{ req.email }}</td>
-                                <td>{{ req.phonenum }}</td>
-                                <td>{{ req.role }}</td>
-                                <td>{{ req.blood_group }}</td>
-                                <td>{{ req.units }}</td>
-                                <td>
-                                    {% if req.status == 'Accepted' %}
-                                    <span class="badge bg-success">Accepted</span>
-                                    {% elif req.status == 'Rejected' %}
-                                    <span class="badge bg-danger">Rejected</span>
-                                    {% else %}
-                                    <span class="badge bg-warning text-dark">Pending</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if req.status == 'Pending' %}
-                                        <a href="{% url 'update_donor_status' req.id 'Approved' %}" class="btn btn-success btn-sm">Approve</a>
-                                        <a href="{% url 'update_donor_status' red.id 'Rejected' %}" class="btn btn-danger btn-sm">Reject</a>
-                                    {% else %}
-                                        <span class="text-muted">No action</span>
-                                    {% endif %}
-                                </td>
-                                </tr>
-                                {% empty %}
-                                <tr><td colspan="9" class="text-center text-muted">No requests found</td></tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+<!-- Navbar -->
+<nav class="navbar d-flex justify-content-between align-items-center">
+    <h1 class="text-white mb-0">Admin Dashboard</h1>
+    <div class="dropdown">
+        <button class="btn btn-light dropdown-toggle" type="button" id="adminDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-user-circle"></i> {{ request.user.username }}
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
+            <li><a class="dropdown-item" href="{% url 'admin_profile' %}"><i class="fa-solid fa-user"></i> Profile</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="{% url 'logout' %}" onclick="return confirmLogout()">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <nav class="nav flex-column">
+        <a class="nav-link" href="{% url 'dashboard' %}">
+            <i class="fa-solid fa-home"></i> Dashboard
+        </a>
+        <a class="nav-link" href="{% url 'admin_patients' %}">
+            <i class="fa-solid fa-users"></i> Patients
+        </a>
+        <a class="nav-link" href="{% url 'admin_hospitals' %}">
+            <i class="fa-solid fa-hospital"></i> Hospitals
+        </a>
+        <a class="nav-link" href="{% url 'admin_donors_list' %}">
+            <i class="fa-solid fa-hand-holding-droplet"></i> Donors
+        </a>
+        <a class="nav-link active" href="{% url 'admin_donor_request' %}">
+            <i class="fa-solid fa-envelope-open-text"></i> Donor Requests
+        </a>
+        <a class="nav-link" href="{% url 'blood_stock_list' %}">
+            <i class="fa-solid fa-droplet"></i> Blood Stock
+        </a>
+        <a class="nav-link" href="{% url 'admin_blood_request' %}">
+            <i class="fa-solid fa-envelope-open-text"></i> Blood Request
+        </a>
+    </nav>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card-dashboard">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0"><i class="fa-solid fa-hand-holding-droplet"></i> Blood Requests</h2>
+        </div>
+
+        <div class="table-responsive">
+           <table class="table table-striped">
+                <thead class="table-danger">
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Role</th>
+                        <th>Blood Group</th>
+                        <th>Units</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for req in donor_records %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ req.fname }}</td>
+                        <td>{{ req.email }}</td>
+                        <td>{{ req.phonenum }}</td>
+                        <td>{{ req.role }}</td>
+                        <td>{{ req.blood_group }}</td>
+                        <td>{{ req.units }}</td>
+                        <td>
+                            {% if req.status == 'Accepted' %}
+                                <span class="badge bg-success">Accepted</span>
+                            {% elif req.status == 'Rejected' %}
+                                <span class="badge bg-danger">Rejected</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if req.status == 'Pending' %}
+                                <a href="{% url 'update_donor_status' req.id 'Approved' %}" class="btn btn-success btn-sm">Approve</a>
+                                <a href="{% url 'update_donor_status' req.id 'Rejected' %}" class="btn btn-danger btn-sm">Reject</a>
+                            {% else %}
+                                <span class="text-muted">No action</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="9" class="text-center text-muted">No requests found</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
-    <script>
-        function confirmLogout() {
-            return confirm("Are you sure you want to log out?");
-        }
-    </script>
+</div>
+
+<script>
+    function confirmLogout() {
+        return confirm("Are you sure you want to log out?");
+    }
+</script>
+
 </body>
 </html>

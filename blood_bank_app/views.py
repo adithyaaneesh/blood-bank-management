@@ -120,7 +120,7 @@ def dashboard(request):
 
     ax.axis('equal')  
 
-    legend_labels = [f"{label}: {size} units" for label, size in zip(labels, sizes)]
+    legend_labels = [f"{label} : {size} ml" for label, size in zip(labels, sizes)]
     ax.legend(
         wedges,
         legend_labels,
@@ -418,7 +418,7 @@ def hospital_request_history(request):
 @login_required
 def hospital_stock(request):
     stocks = BloodStock.objects.all()
-    blood_data = {group: 0 for group, _ in BloodStock.BLOOD_GROUPS}
+    blood_data = {group: 0 for group, _ in BloodStock.BLOOD_GROUP}
     for stock in stocks:
         blood_data[stock.blood_group] = stock.units
     context = {bg.lower().replace('+', '_positive').replace('-', '_negative'): units for bg, units in blood_data.items()}

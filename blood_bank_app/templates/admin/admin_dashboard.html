@@ -20,9 +20,14 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        /* Navbar */
         .navbar {
             background: linear-gradient(90deg, #1F78C9, #007BFF);
             padding: 15px 30px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
         }
 
         .navbar h1 {
@@ -43,10 +48,17 @@
             background-color: #e9f3ff;
         }
 
+        /* Sidebar */
         .sidebar {
-            min-height: 100vh;
+            position: fixed; /* Fixed sidebar */
+            top: 60px; /* height of navbar */
+            left: 0;
+            width: 200px;
+            height: calc(100vh - 60px); /* full height minus navbar */
             background: #fff;
             box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+            padding-top: 20px;
+            overflow: hidden; /* no scroll */
         }
 
         .sidebar .nav-link {
@@ -59,12 +71,21 @@
             background-color: #1F78C9;
             color: #fff;
             border-radius: 6px;
+            padding-left: 25px; 
+            padding-right: 25px; 
         }
 
         .sidebar .nav-link:hover {
             background-color: #85b3df;
             color: #fff;
             border-radius: 6px;
+        }
+
+        .main-content {
+            margin-left: 200px;
+            padding: 90px 30px 30px 30px; 
+            min-height: 100vh;
+            overflow-y: auto;
         }
 
         .summary-cards {
@@ -141,70 +162,59 @@
         </div>
     </nav>
 
-    <!-- Main Container -->
-    <div class="container-fluid">
-        <div class="row">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <nav class="nav flex-column">
+            <a class="nav-link active" href="{% url 'dashboard' %}"><i class="fa-solid fa-home"></i> Dashboard</a>
+            <a class="nav-link" href="{% url 'admin_patients' %}"><i class="fa-solid fa-users"></i> Patients</a>
+            <a class="nav-link" href="{% url 'admin_hospitals' %}"><i class="fa-solid fa-hospital"></i> Hospitals</a>
+            <a class="nav-link" href="{% url 'admin_donors_list' %}"><i class="fa-solid fa-hand-holding-droplet"></i> Donors</a>
+            <a class="nav-link" href="{% url 'admin_donors' %}"><i class="fa-solid fa-envelope-open-text"></i> Donor Requests</a>
+            <a class="nav-link" href="{% url 'blood_stock_list' %}"><i class="fa-solid fa-droplet"></i> Blood Stock</a>
+            <a class="nav-link" href="{% url 'admin_blood_request' %}"><i class="fa-solid fa-envelope-open-text"></i> Blood Request</a>
+        </nav>
+    </div>
 
-            <!-- Sidebar -->
-            <div class="col-md-2 p-3 sidebar">
-                <nav class="nav flex-column">
-                    <a class="nav-link active" href="{% url 'dashboard' %}"><i class="fa-solid fa-home"></i> Dashboard</a>
-                    <a class="nav-link" href="{% url 'admin_patients' %}"><i class="fa-solid fa-users"></i> Patients</a>
-                    <a class="nav-link" href="{% url 'admin_hospitals' %}"><i class="fa-solid fa-hospital"></i> Hospitals</a>
-                    <a class="nav-link" href="{% url 'admin_donors_list' %}"><i class="fa-solid fa-hand-holding-droplet"></i> Donors</a>
-                    <a class="nav-link" href="{% url 'admin_donors' %}"><i class="fa-solid fa-envelope-open-text"></i> Donor Requests</a>
-                    <a class="nav-link" href="{% url 'blood_stock_list' %}"><i class="fa-solid fa-droplet"></i> Blood Stock</a>
-                    <a class="nav-link" href="{% url 'admin_blood_request' %}"><i class="fa-solid fa-envelope-open-text"></i> Blood Request</a>
-                </nav>
+    <!-- Main Content -->
+    <div class="main-content">
+        <h2 class="mb-4">Dashboard Summary</h2>
+
+        <!-- Summary Cards -->
+        <div class="summary-cards mb-5">
+            <div class="summary-card">
+                <i class="fa-solid fa-hand-holding-droplet"></i>
+                <p class="count-number">{{ available_donors }}</p>
+                <p>Available Donors</p>
             </div>
-
-            <!-- Content -->
-            <div class="col-md-10 p-4">
-                <h2 class="mb-4">Dashboard Summary</h2>
-
-                <!-- Summary Cards -->
-                <div class="summary-cards mb-5">
-                    <div class="summary-card">
-                        <i class="fa-solid fa-hand-holding-droplet"></i>
-                        <p class="count-number">{{ available_donors }}</p>
-                        <p>Available Donors</p>
-                    </div>
-                    <div class="summary-card">
-                        <i class="fa-solid fa-droplet"></i>
-                        <p class="count-number">{{ total_blood_units }}</p>
-                        <p>Total Blood Units</p>
-                    </div>
-                    <div class="summary-card">
-                        <i class="fa-solid fa-envelope-open-text"></i>
-                        <p class="count-number">{{ total_requests }}</p>
-                        <p>Total Requests</p>
-                    </div>
-                    <div class="summary-card">
-                        <i class="fa-solid fa-check-circle"></i>
-                        <p class="count-number">{{ approved_requests }}</p>
-                        <p>Approved Requests</p>
-                    </div>
-                </div>
-
-                <!-- Pie Chart -->
-              <h3 class="mb-4">Blood Stock Pie Chart</h3>
-                <div class="text-center">
-                    <img src="data:image/png;base64,{{ blood_chart }}" alt="Blood Stock Chart" class="img-fluid" style="max-width:700px;">
-                </div>
-
+            <div class="summary-card">
+                <i class="fa-solid fa-droplet"></i>
+                <p class="count-number">{{ total_blood_units }}</p>
+                <p>Total Blood Units</p>
             </div>
+            <div class="summary-card">
+                <i class="fa-solid fa-envelope-open-text"></i>
+                <p class="count-number">{{ total_requests }}</p>
+                <p>Total Requests</p>
+            </div>
+            <div class="summary-card">
+                <i class="fa-solid fa-check-circle"></i>
+                <p class="count-number">{{ approved_requests }}</p>
+                <p>Approved Requests</p>
+            </div>
+        </div>
 
+        <!-- Pie Chart -->
+        <h3 class="mb-4">Blood Stock Pie Chart</h3>
+        <div class="text-center">
+            <img src="data:image/png;base64,{{ blood_chart }}" alt="Blood Stock Chart" class="img-fluid" style="max-width:700px;">
         </div>
     </div>
 
-
-
-<script>
-    function confirmLogout() {
-        return confirm("Are you sure you want to log out?");
-    }
-</script>
-
+    <script>
+        function confirmLogout() {
+            return confirm("Are you sure you want to log out?");
+        }
+    </script>
 
 </body>
 </html>
