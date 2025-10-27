@@ -417,11 +417,53 @@ def hospital_request_history(request):
 
 @login_required
 def hospital_stock(request):
-    stocks = BloodStock.objects.all()
     blood_data = {group: 0 for group, _ in BloodStock.BLOOD_GROUP}
-    for stock in stocks:
+    for stock in BloodStock.objects.all():
         blood_data[stock.blood_group] = stock.units
-    context = {bg.lower().replace('+', '_positive').replace('-', '_negative'): units for bg, units in blood_data.items()}
+
+    labels = list(blood_data.keys())
+    sizes = list(blood_data.values())
+
+    colors = ["#A9A3C5", "#EBC8C0", "#CCDC82", "#C0E3EB", "#CDC0EB", '#EBC0DE', '#DEEBC0', "#C0EBCD"]
+
+    fig, ax = plt.subplots(figsize=(7,6), facecolor='white')
+
+    wedges, texts = ax.pie(
+        sizes,
+        colors=colors[:len(labels)],
+        startangle=90,
+        shadow=False,
+        wedgeprops={'edgecolor':'white', 'linewidth':1},
+        labels=labels,             
+        labeldistance=1.1,        
+        autopct=None,            
+        textprops={'fontsize':12, 'weight':'bold'}
+    )
+
+    ax.axis('equal')  
+
+    legend_labels = [f"{label} : {size} ml" for label, size in zip(labels, sizes)]
+    ax.legend(
+        wedges,
+        legend_labels,
+        title="Blood Stock",
+        loc="center left",
+        bbox_to_anchor=(1, 0, 0.4, 1),
+        fontsize=12,
+        title_fontsize=13
+    )
+
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png', bbox_inches='tight', transparent=True)
+    buf.seek(0)
+    chart_base64 = base64.b64encode(buf.read()).decode('utf-8')
+    buf.close()
+    plt.close(fig)
+
+    context = {
+        'blood_chart': chart_base64,
+    }
+
     return render(request, 'hospital/hospital_stocks.html', context)
 
 # Admin User Management

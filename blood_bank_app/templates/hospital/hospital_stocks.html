@@ -124,57 +124,9 @@
 
   <section>
     <div class="container">
-      <h2>Blood Group Stock</h2>
-      <div class="summary-cards">
-
-        <div class="summary-card">
-          <i class="fa-solid fa-droplet"></i>
-          <p class="count-number">{{ a_positive }}</p>
-          <p>A+</p>
-        </div>
-
-        <div class="summary-card">
-          <i class="fa-solid fa-droplet"></i>
-          <p class="count-number">{{ a_negative }}</p>
-          <p>A−</p>
-        </div>
-
-        <div class="summary-card">
-          <i class="fa-solid fa-droplet"></i>
-          <p class="count-number">{{ b_positive }}</p>
-          <p>B+</p>
-        </div>
-
-        <div class="summary-card">
-          <i class="fa-solid fa-droplet"></i>
-          <p class="count-number">{{ b_negative }}</p>
-          <p>B−</p>
-        </div>
-
-        <div class="summary-card">
-          <i class="fa-solid fa-droplet"></i>
-          <p class="count-number">{{ ab_positive }}</p>
-          <p>AB+</p>
-        </div>
-
-        <div class="summary-card">
-          <i class="fa-solid fa-droplet"></i>
-          <p class="count-number">{{ ab_negative }}</p>
-          <p>AB−</p>
-        </div>
-
-        <div class="summary-card">
-          <i class="fa-solid fa-droplet"></i>
-          <p class="count-number">{{ o_positive }}</p>
-          <p>O+</p>
-        </div>
-
-        <div class="summary-card">
-          <i class="fa-solid fa-droplet"></i>
-          <p class="count-number">{{ o_negative }}</p>
-          <p>O−</p>
-        </div>
-
+      <h3 class="mb-4 text-danger">Available Blood Stock</h3>
+      <div class="text-center">
+          <img src="data:image/png;base64,{{ blood_chart }}" alt="Blood Stock Chart" class="img-fluid" style="max-width:600px;">
       </div>
     </div>
   </section>
