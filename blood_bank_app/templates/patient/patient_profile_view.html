@@ -27,7 +27,14 @@
             border-radius: 12px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             padding: 25px;
-            position: relative;
+        }
+
+        .profile-pic {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid #dc3545;
         }
 
         .profile-info h4 {
@@ -40,39 +47,10 @@
             margin-bottom: 10px;
         }
 
-        .edit-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background-color: #dc3545;
-            color: #fff;
-            border: none;
+        .btn-custom {
             border-radius: 8px;
-            padding: 5px 15px;
             font-weight: 500;
-            transition: 0.3s;
         }
-        .home-btn {
-            position: absolute;
-            top: 20px;
-            left: 450px;
-            background-color: silver;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            padding: 5px 15px;
-            font-weight: 500;
-            transition: 0.3s;
-        }
-        .home-btn:hover {
-            background-color: #495057;
-            color: black;
-        }
-        .edit-btn:hover {
-            background-color: #b71c1c;
-            color: #fff;
-        }
-
     </style>
 </head>
 <body>
@@ -80,22 +58,36 @@
     <h2 class="mb-4">Patient Profile</h2>
 
     {% if profile %}
-        <div class="card p-4 shadow-sm">
-            <h4>{{ profile.full_name }}</h4>
-            <p><strong>Age:</strong> {{ profile.age }}</p>
-            <p><strong>Gender:</strong> {{ profile.gender }}</p>
-            <p><strong>Blood Group:</strong> {{ profile.blood_group }}</p>
-            <p><strong>Phone:</strong> {{ profile.phone_number }}</p>
-            <p><strong>Address:</strong> {{ profile.address }}</p>
-            <a href="{% url 'patient_profile' %}" class="btn btn-danger mt-3">Edit Profile</a>
-            <a href="{% url 'patienthome' %}" class="btn btn-secondary mt-3">Back</a>
+        <div class="card text-center">
+            <!-- ✅ Profile Picture -->
+            <div class="mb-3">
+                {% if profile.profile_picture %}
+                    <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="profile-pic shadow-sm">
+                {% else %}
+                    <img src="https://via.placeholder.com/140" alt="Default" class="profile-pic shadow-sm">
+                {% endif %}
+            </div>
+
+            <div class="profile-info text-start px-4">
+                <h4 class="text-center">{{ profile.full_name }}</h4>
+                <hr>
+                <p><strong>Age:</strong> {{ profile.age }}</p>
+                <p><strong>Gender:</strong> {{ profile.gender }}</p>
+                <p><strong>Blood Group:</strong> {{ profile.blood_group }}</p>
+                <p><strong>Phone:</strong> {{ profile.phone_number }}</p>
+                <p><strong>Address:</strong> {{ profile.address }}</p>
+            </div>
+
+            <div class="d-flex justify-content-center gap-3 mt-3">
+                <a href="{% url 'patient_profile' %}" class="btn btn-danger btn-custom">Edit Profile</a>
+                <a href="{% url 'patienthome' %}" class="btn btn-secondary btn-custom">Back</a>
+            </div>
         </div>
     {% else %}
-        <p>No profile found. Please <a href="{% url 'patient_profile' %}">fill your profile</a>.</p>
+        <div class="alert alert-warning text-center mt-5">
+            No profile found. Please <a href="{% url 'patient_profile' %}" class="alert-link">fill your profile</a>.
+        </div>
     {% endif %}
 </div>
-
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

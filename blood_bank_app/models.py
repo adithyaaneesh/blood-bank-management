@@ -121,6 +121,13 @@ class HospitalDetails(models.Model):
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=20)
 
+    profile_picture = models.ImageField(
+        upload_to='profile_pics/',
+        default='profile_pics/default.jpg',
+        blank=True,
+        null=True
+    )
+
     def __str__(self):
         return self.name
     
@@ -134,27 +141,16 @@ class PatientProfile(models.Model):
     phone_number = models.CharField(max_length=20)
     address = models.TextField()
 
+    profile_picture = models.ImageField(
+        upload_to='profile_pics/',
+        default='profile_pics/default.jpg',
+        blank=True,
+        null=True
+    )
+
     def __str__(self):
         return self.full_name
-    
-# class DonorProfile(models.Model):
-#     user = models.OneToOneField(User, on_delete=models.CASCADE)
-#     name = models.CharField(max_length=255)
-#     age = models.PositiveIntegerField(default=18)
-#     gender = models.CharField(max_length=20)
-#     blood_group = models.CharField(max_length=5)
-#     phone_number = models.CharField(max_length=20)
-#     address = models.TextField(blank=True, null=True)
 
-#     profile_picture = models.ImageField(
-#         upload_to='profile_pics/',
-#         default='profile_pics/default.jpg',
-#         blank=True,
-#         null=True
-#     )
-
-#     def __str__(self):
-#         return self.name
 
 class DonorProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

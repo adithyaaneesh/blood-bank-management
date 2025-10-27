@@ -500,13 +500,13 @@ def patient_profile(request):
         profile = None
 
     if request.method == 'POST':
-        form = PatientProfileForm(request.POST, instance=profile)
+        form = PatientProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             patient_profile = form.save(commit=False)
             patient_profile.user = request.user
             patient_profile.save()
             messages.success(request, "Profile saved successfully!")
-            return redirect('patienthome')
+            return redirect('patient_profile_view')
         else:
             messages.error(request, "Please correct the errors below.")
     else:

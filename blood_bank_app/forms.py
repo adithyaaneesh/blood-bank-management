@@ -77,14 +77,38 @@ class HospitalForm(forms.ModelForm):
 class PatientProfileForm(forms.ModelForm):
     class Meta:
         model = PatientProfile
-        fields = ['full_name', 'age', 'gender', 'blood_group', 'phone_number', 'address']
+        fields = [
+            'full_name',
+            'age',
+            'gender',
+            'blood_group',
+            'phone_number',
+            'address',
+            'profile_picture',
+        ]
         widgets = {
             'full_name': forms.TextInput(attrs={'class': 'form-control'}),
             'age': forms.NumberInput(attrs={'class': 'form-control'}),
-            'gender': forms.Select(attrs={'class': 'form-control'}, choices=[('Male','Male'),('Female','Female'),('Other','Other')]),
-            'blood_group': forms.Select(attrs={'class': 'form-control'}, choices=[('A+','A+'),('A-','A-'),('B+','B+'),('B-','B-'),('AB+','AB+'),('AB-','AB-'),('O+','O+'),('O-','O-')]),
+            'gender': forms.Select(
+                attrs={'class': 'form-control'},
+                choices=[
+                    ('Male', 'Male'),
+                    ('Female', 'Female'),
+                    ('Other', 'Other'),
+                ]
+            ),
+            'blood_group': forms.Select(
+                attrs={'class': 'form-control'},
+                choices=[
+                    ('A+', 'A+'), ('A-', 'A-'),
+                    ('B+', 'B+'), ('B-', 'B-'),
+                    ('AB+', 'AB+'), ('AB-', 'AB-'),
+                    ('O+', 'O+'), ('O-', 'O-'),
+                ]
+            ),
             'phone_number': forms.TextInput(attrs={'class': 'form-control'}),
-            'address': forms.Textarea(attrs={'class': 'form-control', 'rows':3}),
+            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'profile_picture': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
 
 
@@ -99,7 +123,6 @@ class DonorBasicForm(forms.ModelForm):
 class DonorEligibilityForm(forms.ModelForm):
     class Meta:
         model = DonorProfile
-        # Include only the fields relevant for eligibility
         fields = [
             'date_of_birth', 'gender', 'weight', 'hemoglobin', 
             'systolic_pressure', 'diastolic_pressure', 
@@ -110,19 +133,16 @@ class DonorEligibilityForm(forms.ModelForm):
         cleaned_data = super().clean()
         errors = {}
 
-        # Calculate age
         dob = cleaned_data.get('date_of_birth')
         if dob:
             age = (date.today() - dob).days // 365
             if age < 18 or age > 65:
                 errors['date_of_birth'] = "Donor must be between 18 and 65 years old."
 
-        # Weight
         weight = cleaned_data.get('weight')
         if weight and weight < 50:
             errors['weight'] = "Donor must weigh at least 50 kg."
 
-        # Hemoglobin
         gender = cleaned_data.get('gender')
         hemoglobin = cleaned_data.get('hemoglobin')
         if gender == 'Male' and hemoglobin and hemoglobin < 13:
@@ -130,7 +150,6 @@ class DonorEligibilityForm(forms.ModelForm):
         if gender == 'Female' and hemoglobin and hemoglobin < 12.5:
             errors['hemoglobin'] = "Female donors must have hemoglobin >= 12.5 g/dL."
 
-        # Blood pressure
         sys = cleaned_data.get('systolic_pressure')
         dia = cleaned_data.get('diastolic_pressure')
         if sys and dia:
@@ -138,17 +157,14 @@ class DonorEligibilityForm(forms.ModelForm):
                 errors['systolic_pressure'] = "Blood pressure must be within normal range."
                 errors['diastolic_pressure'] = "Blood pressure must be within normal range."
 
-        # Blood sugar
         sugar = cleaned_data.get('blood_sugar')
         if sugar and sugar > 200:
             errors['blood_sugar'] = "Blood sugar must be <= 200 mg/dL."
 
-        # Cholesterol
         chol = cleaned_data.get('cholesterol')
         if chol and chol > 200:
             errors['cholesterol'] = "Cholesterol must be <= 200 mg/dL."
 
-        # Last donation
         last_donated = cleaned_data.get('last_donated_date')
         if last_donated and (date.today() - last_donated) < timedelta(days=90):
             errors['last_donated_date'] = "At least 90 days must pass since the last donation."
