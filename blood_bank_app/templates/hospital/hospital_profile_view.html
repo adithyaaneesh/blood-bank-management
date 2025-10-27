@@ -10,18 +10,15 @@
             background-color: #f8f9fa;
             font-family: 'Poppins', sans-serif;
         }
-
         .container {
             max-width: 700px;
         }
-
         h2 {
             color: #dc3545;
             font-weight: 700;
             text-align: center;
             margin-top: 30px;
         }
-
         .card {
             margin-top: 20px;
             border-radius: 12px;
@@ -29,17 +26,14 @@
             padding: 25px;
             position: relative;
         }
-
         .profile-info h4 {
             font-weight: 600;
             color: #343a40;
         }
-
         .profile-info p {
             color: #495057;
             margin-bottom: 10px;
         }
-
         .edit-btn {
             position: absolute;
             top: 20px;
@@ -55,7 +49,7 @@
         .home-btn {
             position: absolute;
             top: 20px;
-            left: 450px;
+            left: 20px;
             background-color: silver;
             color: #fff;
             border: none;
@@ -64,15 +58,16 @@
             font-weight: 500;
             transition: 0.3s;
         }
-        .home-btn:hover {
-            background-color: #495057;
-            color: black;
+        .edit-btn:hover { background-color: #b71c1c; color: #fff; }
+        .home-btn:hover { background-color: #495057; color: black; }
+        .profile-pic {
+            display: block;
+            margin: 0 auto 20px auto;
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
         }
-        .edit-btn:hover {
-            background-color: #b71c1c;
-            color: #fff;
-        }
-
     </style>
 </head>
 <body>
@@ -81,9 +76,13 @@
     <h2>Hospital Profile Details</h2>
 
     {% if hospital %}
-    <div class="card profile-info">
-        <a href="{% url 'hospital_profile' %}" class="btn edit-btn">Edit Profile</a>
+    <div class="card profile-info text-center">
+        <a href="{% url 'hospital_profile' %}" class="btn edit-btn">Edit</a>
         <a href="{% url 'hospitalhome' %}" class="btn home-btn">Home</a>
+
+        {% if hospital.profile_picture %}
+            <img src="{{ hospital.profile_picture.url }}" class="profile-pic" alt="Profile Picture">
+        {% endif %}
         <h4>{{ hospital.name }}</h4>
         <p><strong>Address:</strong> {{ hospital.address }}</p>
         <p><strong>Email:</strong> {{ hospital.email }}</p>
@@ -93,7 +92,5 @@
     <p class="text-center mt-4">No hospital profile found.</p>
     {% endif %}
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

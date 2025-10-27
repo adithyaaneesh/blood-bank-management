@@ -65,14 +65,13 @@ class DonorFormForm(forms.ModelForm):
 class HospitalForm(forms.ModelForm):
     class Meta:
         model = HospitalDetails
-        fields = ['name', 'address', 'email', 'phone_number']
+        fields = ['name', 'address', 'email', 'phone_number', 'profile_picture']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Hospital Name'}),
             'address': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Address', 'rows': 3}),
             'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'}),
             'phone_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Phone Number'}),
         }
-
 
 class PatientProfileForm(forms.ModelForm):
     class Meta:

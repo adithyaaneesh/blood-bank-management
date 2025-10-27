@@ -472,16 +472,17 @@ def hospital_profile_view(request):
     return render(request, 'hospital/hospital_profile_view.html', {'hospital': hospital})
 
 
+
 @login_required
 def hospital_profile(request):
-    hospital = HospitalDetails.objects.first()
+    hospital, _ = HospitalDetails.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
-        form = HospitalForm(request.POST, instance=hospital)
+        form = HospitalForm(request.POST, request.FILES, instance=hospital)
         if form.is_valid():
             form.save()
             messages.success(request, "Hospital profile saved successfully!")
-            return redirect('hospitalhome') 
+            return redirect('hospital_profile_view') 
         else:
             messages.error(request, "Please correct the errors below.")
     else:
@@ -491,6 +492,12 @@ def hospital_profile(request):
         'form': form,
         'hospital': hospital
     })
+
+
+@login_required
+def hospital_profile_view(request):
+    hospital = HospitalDetails.objects.filter(user=request.user).first()
+    return render(request, 'hospital/hospital_profile_view.html', {'hospital': hospital})
 
 @login_required
 def patient_profile(request):
